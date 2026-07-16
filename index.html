@@ -54,6 +54,7 @@
   --track:#E14B4B; --track-soft:#3A1B18;                          /* 예산 초과 경고 = 빨강 */
   --danger:#F06A5C; --danger-soft:#361D1A;
   --amber:#E0A94F; --amber-soft:#332A16;
+  --success:#57C27D; --success-soft:#173124;
 
   --input:#232220;
   --lane-a:#232120;
@@ -98,6 +99,8 @@ html[data-theme="light"]{
 
   --amber:#A66D13;
   --amber-soft:#FFF4D9;
+  --success:#2F8A54;
+  --success-soft:#E8F6ED;
 
   --input:#FAF9F7;
   --lane-a:#F1EEE9;
@@ -272,6 +275,37 @@ html[data-theme="light"] .card{
 .item.done .t1{text-decoration:line-through;color:var(--muted);font-weight:600}
 .ck-hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
 
+/* 준비 진행 정보 구조 */
+.ck-progress-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;margin-bottom:4px}
+.ck-progress-head strong{font-size:13px;font-weight:800}
+.ck-progress-head span{font-size:11px;font-weight:700;color:var(--muted)}
+.ck-preview-item{display:flex;align-items:flex-start;gap:10px;padding:13px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.ck-preview-item:last-child{border-bottom:none}
+.ck-preview-item .grow{flex:1;min-width:0}
+.ck-preview-item .t1{font-size:14px;font-weight:800;line-height:1.35;word-break:keep-all}
+.ck-preview-item.is-done .t1{text-decoration:line-through;color:var(--muted);font-weight:650}
+.ck-chevron{font-size:22px;line-height:1;color:var(--muted);margin-top:1px;flex-shrink:0}
+.ck-meta{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-top:7px}
+.ck-meta .chip{margin-right:0;vertical-align:0}
+.meta-chip{display:inline-flex;align-items:center;gap:4px;min-height:22px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);font-size:10px;font-weight:800;line-height:1;background:transparent;color:var(--muted)}
+.status-chip.pending{background:var(--sync-bg);color:var(--muted)}
+.status-chip.doing{border-color:var(--amber);background:var(--amber-soft);color:var(--amber)}
+.status-chip.done{border-color:var(--success);background:var(--success-soft);color:var(--success)}
+.owner-chip{background:var(--black-soft);color:var(--ink)}
+.owner-chip.unassigned{border-color:var(--amber);background:var(--amber-soft);color:var(--amber)}
+.ck-date{margin-top:7px;font-size:12px;font-weight:700;color:var(--muted)}
+.ck-date.soon,.ck-date.today{color:var(--amber)}
+.ck-date.overdue{color:var(--danger)}
+.ck-note{margin-top:5px;font-size:11px;line-height:1.45;color:var(--muted);word-break:break-word}
+.ck-more,.ck-done-toggle{width:100%;border:0;background:none;color:var(--muted);font-family:inherit;font-size:12px;font-weight:750;padding:11px 4px 3px;cursor:pointer;text-align:center}
+.ck-more{color:var(--green-dark)}
+.ck-done-toggle{border-top:1px solid var(--line);margin-top:6px;padding-top:12px}
+.ck-done-wrap{display:none;margin-top:2px}
+.ck-done-wrap.on{display:block}
+.ck-list-row{align-items:flex-start}
+.ck-list-row .ck{margin-top:2px}
+
+
 /* 버튼/폼 */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:11px;font-family:inherit;font-size:14px;font-weight:700;padding:12px 16px;cursor:pointer;transition:.15s}
 .btn:active{transform:scale(.97)}
@@ -420,9 +454,18 @@ nav button.on{color:var(--green)}
   </div>
 
   <div class="card">
-    <div class="sec-title">준비 진행 <small id="ckSummary">0 / 0 완료</small></div>
+    <div class="sec-title">준비 진행 <small id="ckSummary">전체 0개 · 완료 0개</small></div>
     <div class="lane-track" style="height:10px;border-radius:5px"><div class="lane-fill" id="ckFill" style="border-radius:5px"></div></div>
-    <div id="homeCkPreview" style="margin-top:6px"></div>
+
+    <div class="ck-progress-head">
+      <strong id="homeCkRemainLabel">남은 준비 0개</strong>
+      <span id="homeCkDoingLabel">진행 중 0개</span>
+    </div>
+
+    <div id="homeCkPreview"></div>
+    <button type="button" class="ck-more" id="homeCkMore" style="display:none" onclick="openCheckTab()"></button>
+    <button type="button" class="ck-done-toggle" id="homeCkDoneToggle" style="display:none" onclick="toggleHomeDone()"></button>
+    <div class="ck-done-wrap" id="homeCkCompleted"></div>
   </div>
 
   <div class="card">
@@ -435,7 +478,7 @@ nav button.on{color:var(--green)}
 <section class="tab" id="tab-check">
   <div class="card no-print">
     <button class="btn pri" onclick="openCkModal()">＋ 준비 항목 추가</button>
-    <div class="ck-hint">체크박스를 누를 때마다 <b>대기 → 진행중 → 완료</b> 순으로 바뀝니다. 변경 사항은 팀 전체 화면에 실시간 반영됩니다.</div>
+    <div class="ck-hint">각 항목 왼쪽의 상태 버튼을 누르면 <b>대기 → 진행 중 → 완료</b> 순으로 바뀝니다. 항목 본문을 누르면 담당자·기한·메모를 수정할 수 있습니다.</div>
   </div>
   <div class="card">
     <div class="seg" id="ckFilter" style="margin-bottom:8px"></div>
@@ -770,6 +813,7 @@ let S={budget:[],expenses:[],checklist:[],cats:[...DEFAULT_CATS],catColors:{},
   meta:{label:'POD CHURCH',title:'ACCOUNTING PROGRAM',sub:'포드처치 회계 프로그램'}};
 let editingExp=null,editingBg=null,editingCk=null,pendingReceipt=null;
 let ckFilterVal='전체';
+let homeDoneOpen=false;
 let db=null;
 const col=name=>collection(db,`${EVENT}_${name}`);
 const settingsRef=()=>doc(db,`${EVENT}_meta`,'settings');
@@ -865,6 +909,78 @@ function renderSegs(){
 /* ── 렌더 ── */
 function renderAll(){ renderSegs(); renderDash(); renderCk(); renderBudget(); renderExp(); renderSettle(); renderMyName(); }
 
+function statusChip(status){
+  if(status==='done') return '<span class="meta-chip status-chip done">✓ 완료</span>';
+  if(status==='doing') return '<span class="meta-chip status-chip doing">◐ 진행 중</span>';
+  return '<span class="meta-chip status-chip pending">○ 대기</span>';
+}
+
+function ownerChip(owner){
+  const name=(owner||'').trim();
+  return name
+    ? `<span class="meta-chip owner-chip">👤 ${esc(name)}</span>`
+    : '<span class="meta-chip owner-chip unassigned">👤 담당자 미정</span>';
+}
+
+function parseLocalDate(value){
+  if(!value) return null;
+  const parts=value.split('-').map(Number);
+  if(parts.length!==3||parts.some(n=>!Number.isFinite(n))) return null;
+  const [y,m,d]=parts;
+  const date=new Date(y,m-1,d);
+  return Number.isNaN(date.getTime())?null:date;
+}
+
+function formatDueDate(value){
+  const date=parseLocalDate(value);
+  if(!date) return '';
+  const days=['일','월','화','수','목','금','토'];
+  return `~${date.getMonth()+1}/${date.getDate()}(${days[date.getDay()]})`;
+}
+
+function dueMarkup(value,status){
+  if(!value) return '<div class="ck-date">기한 미정</div>';
+  const due=parseLocalDate(value);
+  if(!due) return `<div class="ck-date">${esc(value)}</div>`;
+  const label=formatDueDate(value);
+  if(status==='done') return `<div class="ck-date">${label}</div>`;
+
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const diff=Math.round((due-today)/86400000);
+
+  if(diff===0) return `<div class="ck-date today">${label} · 오늘</div>`;
+  if(diff<0) return `<div class="ck-date overdue">${label} · ${Math.abs(diff)}일 지남</div>`;
+  if(diff<=3) return `<div class="ck-date soon">${label} · D-${diff}</div>`;
+  return `<div class="ck-date">${label} · D-${diff}</div>`;
+}
+
+function checklistMeta(c,showNote=false){
+  return `<div class="ck-meta">${statusChip(c.status)}${chip(c.category)}${ownerChip(c.owner)}</div>`
+    +dueMarkup(c.due,c.status)
+    +(showNote&&c.note?`<div class="ck-note">${esc(c.note)}</div>`:'');
+}
+
+function homeChecklistItem(c){
+  return `<div class="ck-preview-item ${c.status==='done'?'is-done':''}" onclick="openCkModal('${c.id}')">
+    <div class="grow">
+      <div class="t1">${esc(c.name)}</div>
+      ${checklistMeta(c,false)}
+    </div>
+    <span class="ck-chevron" aria-hidden="true">›</span>
+  </div>`;
+}
+
+window.toggleHomeDone=()=>{
+  homeDoneOpen=!homeDoneOpen;
+  renderDash();
+};
+
+window.openCheckTab=()=>{
+  const button=document.querySelector('nav button[data-tab="check"]');
+  if(button) button.click();
+};
+
 function renderDash(){
   const totalB=S.budget.reduce((a,b)=>a+(+b.amount||0),0);
   const totalE=S.expenses.reduce((a,b)=>a+(+b.amount||0),0);
@@ -894,13 +1010,39 @@ function renderDash(){
   });
   $('catBars').innerHTML=html;
 
-  const done=S.checklist.filter(c=>c.status==='done').length;
-  $('ckSummary').textContent=`${done} / ${S.checklist.length} 완료`;
-  $('ckFill').style.width=(S.checklist.length?done/S.checklist.length*100:0)+'%';
-  const pending=S.checklist.filter(c=>c.status!=='done').slice(0,3);
-  $('homeCkPreview').innerHTML=pending.length
-    ? pending.map(c=>`<div class="item"><div class="grow"><div class="t1">${esc(c.name)}</div><div class="t2">${chip(c.category)}${c.owner?esc(c.owner):''}${c.due?' · ~'+c.due:''}</div></div></div>`).join('')
-    : '<div class="empty">남은 준비 항목이 없습니다 🎉</div>';
+  const totalCk=S.checklist.length;
+  const doneItems=S.checklist.filter(c=>c.status==='done')
+    .sort((a,b)=>((b.due||'')<(a.due||'')?-1:1));
+  const activeItems=S.checklist.filter(c=>c.status!=='done')
+    .sort((a,b)=>{
+      const order={doing:0,pending:1};
+      return order[a.status]-order[b.status]||((a.due||'9')<(b.due||'9')?-1:1);
+    });
+  const doingCount=activeItems.filter(c=>c.status==='doing').length;
+  const done=doneItems.length;
+
+  $('ckSummary').textContent=`전체 ${totalCk}개 · 완료 ${done}개`;
+  $('ckFill').style.width=(totalCk?done/totalCk*100:0)+'%';
+  $('homeCkRemainLabel').textContent=`남은 준비 ${activeItems.length}개`;
+  $('homeCkDoingLabel').textContent=`진행 중 ${doingCount}개`;
+
+  const previewLimit=4;
+  $('homeCkPreview').innerHTML=activeItems.length
+    ? activeItems.slice(0,previewLimit).map(homeChecklistItem).join('')
+    : '<div class="empty">남은 준비 항목이 없습니다.</div>';
+
+  const moreCount=Math.max(0,activeItems.length-previewLimit);
+  $('homeCkMore').style.display=moreCount?'block':'none';
+  $('homeCkMore').textContent=moreCount?`준비 탭에서 ${moreCount}개 더 보기 →`:'';
+
+  $('homeCkDoneToggle').style.display=done?'block':'none';
+  $('homeCkDoneToggle').textContent=done
+    ? `${homeDoneOpen?'▴':'▾'} 완료된 항목 ${done}개 ${homeDoneOpen?'접기':'보기'}`
+    : '';
+  $('homeCkCompleted').classList.toggle('on',homeDoneOpen&&done>0);
+  $('homeCkCompleted').innerHTML=homeDoneOpen
+    ? doneItems.map(homeChecklistItem).join('')
+    : '';
 
   const recent=[...S.expenses].sort((a,b)=>(b.date||'')<(a.date||'')?-1:1).slice(0,3);
   $('homeExpPreview').innerHTML=recent.length
@@ -912,18 +1054,19 @@ function renderCk(){
   const list=S.checklist.filter(c=>ckFilterVal==='전체'||c.category===ckFilterVal);
   const order={pending:0,doing:1,done:2};
   list.sort((a,b)=>order[a.status]-order[b.status]||((a.due||'9')<(b.due||'9')?-1:1));
+
   $('ckList').innerHTML=list.length?list.map(c=>{
     const ckCls=c.status==='done'?'done':c.status==='doing'?'doing':'';
     const mark=c.status==='done'?'✓':c.status==='doing'?'…':'';
-    const st=c.status==='doing'?'<span class="chip amber">진행중</span>':'';
-    return `<div class="item ${c.status==='done'?'done':''}">
-      <div class="ck ${ckCls}" onclick="cycleCk('${c.id}')">${mark}</div>
+
+    return `<div class="item ck-list-row ${c.status==='done'?'done':''}">
+      <div class="ck ${ckCls}" onclick="cycleCk('${c.id}')" title="상태 변경">${mark}</div>
       <div class="grow" onclick="openCkModal('${c.id}')">
         <div class="t1">${esc(c.name)}</div>
-        <div class="t2">${chip(c.category)}${st}${c.owner?esc(c.owner):''}${c.due?' · ~'+c.due:''}${c.note?' · '+esc(c.note):''}</div>
+        ${checklistMeta(c,true)}
       </div>
     </div>`;
-  }).join(''):'<div class="empty">준비 항목을 추가해보세요.<br>예: 작년 정산자료 요청, 푸드트럭 업체 견적 비교</div>';
+  }).join(''):'<div class="empty">준비 항목을 추가해보세요.</div>';
 }
 
 function renderBudget(){
