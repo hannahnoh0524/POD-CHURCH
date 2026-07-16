@@ -895,8 +895,8 @@ function renderHeader(){
   $('hdLabel').textContent=S.meta.label;
   $('hdTitle').innerHTML=esc(S.meta.title)+' <button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>';
   $('hdSub').textContent=S.meta.sub;
-  $('printTitle').textContent=S.meta.title+' 정산서'+(S.meta.sub?' · '+S.meta.sub:'');
-  document.title='행사 회계 · '+S.meta.title;
+  $('printTitle').textContent=S.meta.title+'(S.meta.sub?' · '+S.meta.sub:'');
+  document.title='S.meta.title;
 }
 window.openMetaModal=()=>{
   $('metaLabel').value=S.meta.label;
