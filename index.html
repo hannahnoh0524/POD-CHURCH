@@ -1384,7 +1384,7 @@ body.workspace-ready > nav{
 <div class="pending-screen" id="pendingScreen">
   <div class="pending-card">
     <div class="pending-icon">⏳</div>
-    <h2>참여 승인 대기 중</h2>
+    <h2>참여 편집자 중</h2>
     <p>관리자에게 참여 요청을 보냈습니다.<br>승인 후 이벤트 내용을 확인할 수 있습니다.</p>
     <div class="event-box">
       <strong id="pendingEventName">-</strong>
@@ -1550,7 +1550,7 @@ let editingExp=null,editingBg=null,editingCk=null,pendingReceipt=null;
 let ckFilterVal='전체';
 let pendingExcelImport=null;
 let homeDoneOpen=false;
-let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='pending',members=[],auditLogs=[],workspaceOptions=[],isGlobalAdmin=false,unsubs=[];
+let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='editor',members=[],auditLogs=[],workspaceOptions=[],isGlobalAdmin=false,unsubs=[];
 const col=name=>collection(db,'workspaces',currentWorkspace,name);
 const settingsRef=()=>doc(db,'workspaces',currentWorkspace,'meta','settings');
 const workspaceRef=()=>doc(db,'workspaces',currentWorkspace);
@@ -1559,7 +1559,7 @@ const localName=()=>{try{return localStorage.getItem(USER_KEY)||''}catch(e){retu
 const savedWorkspace=()=>{try{return localStorage.getItem(WORKSPACE_KEY)||''}catch(e){return ''}};
 const saveLocal=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const normCode=v=>(v||'').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'').slice(0,32);
-const roleLabel=r=>({admin:'관리자',editor:'편집자',viewer:'열람자',pending:'승인 대기'})[r]||'승인 대기';
+const roleLabel=r=>({admin:'관리자',editor:'편집자',viewer:'열람자',pending:'편집자'})[r]||'편집자';
 const canEdit=()=>currentRole==='admin'||currentRole==='editor';
 const canAdmin=()=>currentRole==='admin';
 function requireEdit(){if(canEdit())return true;toast(currentRole==='pending'?'관리자 승인 후 수정할 수 있습니다':'열람 권한에서는 수정할 수 없습니다');return false} 
@@ -1588,46 +1588,65 @@ async function boot(){
     $('identityName').value=localName();
 
     const saved=savedWorkspace();
-    const validSaved=saved&&workspaceOptions.some(w=>w.id===saved);
-
-    if(!localName()||!validSaved){
-      if(saved&&!validSaved) saveLocal(WORKSPACE_KEY,'');
-      setSync(false);
-      return;
+    if(saved && workspaceOptions.some(w=>w.id===saved)){
+      $('identityWorkspaceSelect').value=saved;
     }
 
-    try{
-      await enterWorkspace(saved);
-    }catch(e){
-      console.error(e);
-      saveLocal(WORKSPACE_KEY,'');
-      currentWorkspace='';
-      currentWorkspaceName='';
-      document.body.classList.remove('workspace-ready');
-      $('identityOverlay').classList.add('on');
-      setSync(false,true);
-      toast('기존 이벤트 연결에 실패했습니다. 이벤트를 다시 선택해주세요.');
-    }
+    setSync(true);
   }catch(e){
     console.error(e);
     document.body.classList.remove('workspace-ready');
     $('identityOverlay').classList.add('on');
     setSync(false,true);
-    toast('Firebase 연결에 실패했습니다. 인증과 보안 규칙을 확인해주세요.');
+    toast('Firebase 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }
 }
 async function enterWorkspace(code){
-  unsubs.forEach(f=>{try{f()}catch(e){}});unsubs=[];currentWorkspace=normCode(code);saveLocal(WORKSPACE_KEY,currentWorkspace);
-  const ws=await getDoc(workspaceRef());if(!ws.exists())throw new Error('NOT_FOUND');currentWorkspaceName=ws.data().name||currentWorkspace;
-  let ms=await getDoc(memberRef());if(!ms.exists()){await setDoc(memberRef(),{displayName:localName(),role:'pending',joinedAt:serverTimestamp()});ms=await getDoc(memberRef())}currentRole=ms.data().role||'pending';
-  bindSnapshots();renderAccountUI();applyPermissions();
+  unsubs.forEach(fn=>{try{fn()}catch(e){}});
+  unsubs=[];
+
+  currentWorkspace=normCode(code);
+  if(!currentWorkspace) throw new Error('INVALID_WORKSPACE');
+
+  const ws=await getDoc(workspaceRef());
+  if(!ws.exists() || ws.data()?.active===false) throw new Error('NOT_FOUND');
+
+  currentWorkspaceName=ws.data().name||currentWorkspace;
+
+  const ref=memberRef();
+  let memberSnap=await getDoc(ref);
+
+  if(!memberSnap.exists()){
+    await setDoc(ref,{
+      displayName:localName(),
+      role:'editor',
+      joinedAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    });
+    memberSnap=await getDoc(ref);
+  }else{
+    await setDoc(ref,{
+      displayName:localName(),
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    memberSnap=await getDoc(ref);
+  }
+
+  currentRole=memberSnap.data()?.role||'editor';
+  saveLocal(WORKSPACE_KEY,currentWorkspace);
+
+  bindSnapshots();
+  renderAccountUI();
+  applyPermissions();
+
   document.body.classList.add('workspace-ready');
   $('identityOverlay').classList.remove('on');
+  setSync(true);
 }
 function bindSnapshots(){
   unsubs.push(onSnapshot(settingsRef(),snap=>{const d=snap.data();if(d&&Array.isArray(d.cats)&&d.cats.length)S.cats=d.cats;if(d&&d.catColors)S.catColors=d.catColors;if(d){if(d.title!==undefined)S.meta.title=d.title;if(d.sub!==undefined)S.meta.sub=d.sub;if(d.label!==undefined)S.meta.label=d.label}renderHeader();renderAll()}));
   ['budget','expenses','checklist'].forEach(n=>unsubs.push(onSnapshot(col(n),snap=>{S[n]=snap.docs.map(d=>({id:d.id,...d.data()}));setSync(true);renderAll()},e=>{console.error(e);setSync(false,true)})));
-  unsubs.push(onSnapshot(memberRef(),snap=>{if(snap.exists()){currentRole=snap.data().role||'pending';renderAccountUI();applyPermissions();if(canAdmin())bindAdmin()}}));
+  unsubs.push(onSnapshot(memberRef(),snap=>{if(snap.exists()){currentRole=snap.data().role||'editor';renderAccountUI();applyPermissions();if(canAdmin())bindAdmin()}}));
   if(canAdmin())bindAdmin();
 }
 function bindAdmin(){
@@ -1787,38 +1806,44 @@ window.submitIdentity=async()=>{
     : $('identityWorkspaceSelect').value;
 
   if(!name){
-    toast('사용자 이름을 입력해주세요');
+    toast('이름을 입력해주세요');
     return;
   }
 
   if(!code){
-    toast(createMode?'이벤트 코드를 입력해주세요':'참여할 이벤트를 선택해주세요');
+    toast(createMode?'이벤트 코드를 입력해주세요':'이벤트를 선택해주세요');
     return;
   }
 
   saveLocal(USER_KEY,name);
+
+  const button=createMode
+    ? $('createIdentityView').querySelector('.identity-primary')
+    : $('joinEventButton');
+
+  if(button){
+    button.disabled=true;
+    button.textContent=createMode?'생성 중…':'입장 중…';
+  }
 
   try{
     if(createMode){
       await loadGlobalAdminStatus();
 
       if(!isGlobalAdmin){
-        toast('전체 관리자만 이벤트를 만들 수 있습니다');
-        setIdentityMode('join');
-        return;
+        throw new Error('NOT_GLOBAL_ADMIN');
       }
 
       const eventName=$('identityEventName').value.trim();
       if(!eventName){
-        toast('이벤트 이름을 입력해주세요');
-        return;
+        throw new Error('EVENT_NAME_REQUIRED');
       }
 
       await runTransaction(db,async tx=>{
         const workspaceDocument=doc(db,'workspaces',code);
         const existing=await tx.get(workspaceDocument);
 
-        if(existing.exists()) throw Error('EXISTS');
+        if(existing.exists()) throw new Error('EXISTS');
 
         tx.set(workspaceDocument,{
           name:eventName,
@@ -1832,11 +1857,12 @@ window.submitIdentity=async()=>{
         tx.set(doc(db,'workspaces',code,'members',currentUid),{
           displayName:name,
           role:'admin',
-          joinedAt:serverTimestamp()
+          joinedAt:serverTimestamp(),
+          updatedAt:serverTimestamp()
         });
 
         tx.set(doc(db,'workspaces',code,'meta','settings'),{
-          label:'POD CHURCH',
+          label:'POD CHURCH | Accounting Program',
           title:eventName,
           sub:'POD CHURCH | Accounting Program',
           cats:[...DEFAULT_CATS],
@@ -1845,36 +1871,39 @@ window.submitIdentity=async()=>{
       });
 
       await loadWorkspaceOptions();
-    }else{
-      const workspaceDocument=doc(db,'workspaces',code);
-      const workspaceSnapshot=await getDoc(workspaceDocument);
-
-      if(!workspaceSnapshot.exists()||workspaceSnapshot.data()?.active===false){
-        toast('현재 참여할 수 없는 이벤트입니다');
-        await loadWorkspaceOptions();
-        return;
-      }
-
-      const memberDocument=doc(db,'workspaces',code,'members',currentUid);
-      const memberSnapshot=await getDoc(memberDocument);
-
-      if(!memberSnapshot.exists()){
-        await setDoc(memberDocument,{
-          displayName:name,
-          role:'editor',
-          joinedAt:serverTimestamp()
-        });
-      }else{
-        await setDoc(memberDocument,{displayName:name},{merge:true});
-      }
     }
 
-    saveLocal(WORKSPACE_KEY,code);
     await enterWorkspace(code);
-    await writeLog(createMode?'이벤트 생성':'이벤트 입장','workspace',code,null,{name});
+
+    try{
+      await writeLog(
+        createMode?'이벤트 생성':'이벤트 입장',
+        'workspace',
+        code,
+        null,
+        {displayName:name}
+      );
+    }catch(logError){
+      console.warn('로그 저장 실패:',logError);
+    }
   }catch(e){
     console.error(e);
-    toast(e.message==='EXISTS'?'이미 사용 중인 이벤트 코드입니다':'처리 중 오류가 발생했습니다');
+
+    const messages={
+      EXISTS:'이미 사용 중인 이벤트 코드입니다',
+      NOT_GLOBAL_ADMIN:'전체 관리자만 이벤트를 만들 수 있습니다',
+      EVENT_NAME_REQUIRED:'이벤트 이름을 입력해주세요',
+      NOT_FOUND:'선택한 이벤트를 찾을 수 없습니다',
+      INVALID_WORKSPACE:'이벤트를 다시 선택해주세요',
+      'permission-denied':'입장 권한이 없습니다. Firestore 규칙을 확인해주세요.'
+    };
+
+    toast(messages[e.code]||messages[e.message]||'입장 처리 중 오류가 발생했습니다');
+  }finally{
+    if(button){
+      button.disabled=false;
+      button.textContent=createMode?'이벤트 생성':'입장하기';
+    }
   }
 };
 
@@ -1976,33 +2005,19 @@ window.switchManagedEvent=async code=>{
 window.saveDisplayName=async()=>{const n=$('accountNameInput').value.trim();if(!n)return;const old=localName();saveLocal(USER_KEY,n);await setDoc(memberRef(),{displayName:n,updatedAt:serverTimestamp()},{merge:true});renderAccountUI();renderMyName();await writeLog('사용자 ID 변경','member',currentUid,{name:old},{name:n});toast('변경되었습니다')};
 window.joinSwitch=async()=>{
   const code=$('switchWorkspaceSelect').value;
-
   if(!code){
     toast('이벤트를 선택해주세요');
     return;
   }
 
-  const workspaceSnapshot=await getDoc(doc(db,'workspaces',code));
-
-  if(!workspaceSnapshot.exists()||workspaceSnapshot.data()?.active===false){
-    toast('현재 참여할 수 없는 이벤트입니다');
-    await loadWorkspaceOptions();
-    return;
+  try{
+    closeModal('accountModal');
+    await enterWorkspace(code);
+    toast('이벤트를 전환했습니다');
+  }catch(e){
+    console.error(e);
+    toast('이벤트 전환에 실패했습니다');
   }
-
-  const memberDocument=doc(db,'workspaces',code,'members',currentUid);
-  const memberSnapshot=await getDoc(memberDocument);
-
-  if(!memberSnapshot.exists()){
-    await setDoc(memberDocument,{
-      displayName:localName(),
-      role:'editor',
-      joinedAt:serverTimestamp()
-    });
-  }
-
-  closeModal('accountModal');
-  await enterWorkspace(code);
 };
 function renderMembers(){
   if(!$('memberList'))return;
@@ -2020,7 +2035,7 @@ function renderMembers(){
     return `<div class="member-row">
       <div class="member-main">
         ${userChip(m.displayName||'이름 미설정',m)}
-        <small>${pending?'승인 대기 중':roleLabel(m.role)}${self?' · 나':''}</small>
+        <small>${pending?'편집자 중':roleLabel(m.role)}${self?' · 나':''}</small>
       </div>
 
       <button
@@ -2050,7 +2065,7 @@ window.removePendingMember=async uidValue=>{
   const member=members.find(x=>x.uid===uidValue);
   if(!confirm(`${member?.displayName||'이 사용자'}의 참여 요청을 거절할까요?`))return;
   await deleteDoc(doc(db,'workspaces',currentWorkspace,'members',uidValue));
-  await writeLog('참여 요청 거절','member',uidValue,{role:'pending'},null);
+  await writeLog('참여 요청 거절','member',uidValue,{role:'editor'},null);
   toast('참여 요청을 거절했습니다');
 };
 
