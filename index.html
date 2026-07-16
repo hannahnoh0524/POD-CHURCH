@@ -932,6 +932,18 @@ body.workspace-ready > nav{
 }
 .member-main .user-color-chip{margin-bottom:4px}
 
+
+.admin-first-event{
+  margin-bottom:9px;
+  color:var(--ink);
+  font-size:12px;
+  font-weight:800;
+  line-height:1.45;
+}
+.admin-create-entry.on{
+  display:block!important;
+}
+
 </style>
 </head>
 <body>
@@ -1253,18 +1265,19 @@ body.workspace-ready > nav{
       </select>
 
       <div class="event-select-help">
-        <span>목록에 없다면 관리자에게 문의해주세요.</span>
+        <span id="workspaceHelpText">목록에 없다면 관리자에게 문의해주세요.</span>
         <button type="button" onclick="loadWorkspaceOptions(true)">새로고침</button>
       </div>
 
-      <button type="button" class="btn pri identity-primary" onclick="submitIdentity()">이벤트 참여 요청</button>
+      <div class="admin-create-entry" id="adminCreateEntry">
+        <div class="admin-first-event" id="adminFirstEventText">관리자는 새 이벤트를 만들 수 있습니다.</div>
+        <button type="button" class="admin-create-button" onclick="setIdentityMode('create')">＋ 새 이벤트 만들기</button>
+      </div>
+
+      <button type="button" class="btn pri identity-primary" id="joinEventButton" onclick="submitIdentity()">이벤트 참여 요청</button>
 
       <div class="identity-note">
         처음 참여하는 사용자는 관리자의 승인 후 이벤트 내용을 확인하거나 수정할 수 있습니다.
-      </div>
-
-      <div class="admin-create-entry" id="adminCreateEntry">
-        <button type="button" class="admin-create-button" onclick="setIdentityMode('create')">＋ 새 이벤트 만들기</button>
       </div>
 
       <div class="admin-status-box">
@@ -1650,44 +1663,112 @@ function renderMyName(){ $('myNameTag').innerHTML = '<svg viewBox="0 0 24 24" wi
 let identityMode='join',accountPanel='menu',adminView='members',logFilterValue='all';
 
 async function loadGlobalAdminStatus(){
+  isGlobalAdmin=false;
+
   try{
-    const snap=await getDoc(doc(db,'globalAdmins',currentUid));
-    isGlobalAdmin=snap.exists()&&snap.data()?.active!==false;
+    const adminRef=doc(db,'globalAdmins',currentUid);
+    const snap=await getDoc(adminRef);
+    isGlobalAdmin=snap.exists()&&snap.data()?.active===true;
   }catch(e){
-    console.error(e);
-    isGlobalAdmin=false;
+    console.error('globalAdmins 확인 실패:',e);
   }
 
-  $('adminCreateEntry').classList.toggle('on',isGlobalAdmin);
+  const entry=$('adminCreateEntry');
+  if(entry){
+    entry.classList.toggle('on',isGlobalAdmin);
+    entry.style.display=isGlobalAdmin?'block':'none';
+  }
+
+  if($('identityUid')) $('identityUid').textContent=currentUid||'UID 확인 실패';
+
+  return isGlobalAdmin;
 }
 
 window.loadWorkspaceOptions=async(showMessage=false)=>{
+  const select=$('identityWorkspaceSelect');
+  const switchSelect=$('switchWorkspaceSelect');
+
   try{
     const snap=await getDocs(collection(db,'workspaces'));
+
     workspaceOptions=snap.docs
       .map(d=>({id:d.id,...d.data()}))
       .filter(w=>w.active!==false)
       .sort((a,b)=>(a.name||a.id).localeCompare(b.name||b.id,'ko'));
 
-    const html=workspaceOptions.length
+    const hasEvents=workspaceOptions.length>0;
+    const html=hasEvents
       ? '<option value="">참여할 이벤트를 선택해주세요</option>'+
         workspaceOptions.map(w=>`<option value="${esc(w.id)}">${esc(w.name||w.id)}</option>`).join('')
-      : '<option value="">현재 참여 가능한 이벤트가 없습니다</option>';
+      : '<option value="">현재 생성된 이벤트가 없습니다</option>';
 
-    $('identityWorkspaceSelect').innerHTML=html;
-    if($('switchWorkspaceSelect')) $('switchWorkspaceSelect').innerHTML=html;
+    if(select) select.innerHTML=html;
+    if(switchSelect) switchSelect.innerHTML=html;
 
     const saved=savedWorkspace();
     if(saved&&workspaceOptions.some(w=>w.id===saved)){
-      $('identityWorkspaceSelect').value=saved;
-      if($('switchWorkspaceSelect')) $('switchWorkspaceSelect').value=saved;
+      if(select) select.value=saved;
+      if(switchSelect) switchSelect.value=saved;
     }
 
-    if(showMessage) toast('이벤트 목록을 새로 불러왔습니다');
+    if($('workspaceHelpText')){
+      $('workspaceHelpText').textContent=hasEvents
+        ? '참여할 이벤트를 선택해주세요.'
+        : (isGlobalAdmin
+            ? '아직 이벤트가 없습니다. 아래에서 첫 이벤트를 만들어주세요.'
+            : '아직 생성된 이벤트가 없습니다. 관리자에게 문의해주세요.');
+    }
+
+    if($('adminFirstEventText')){
+      $('adminFirstEventText').textContent=hasEvents
+        ? '새 이벤트가 필요하면 아래 버튼으로 추가하세요.'
+        : '첫 이벤트를 먼저 만들어주세요.';
+    }
+
+    if($('joinEventButton')){
+      $('joinEventButton').disabled=!hasEvents;
+      $('joinEventButton').style.opacity=hasEvents?'1':'.45';
+      $('joinEventButton').style.cursor=hasEvents?'pointer':'not-allowed';
+    }
+
+    const entry=$('adminCreateEntry');
+    if(entry){
+      entry.classList.toggle('on',isGlobalAdmin);
+      entry.style.display=isGlobalAdmin?'block':'none';
+    }
+
+    if(showMessage){
+      toast(hasEvents?'이벤트 목록을 새로 불러왔습니다':'현재 생성된 이벤트가 없습니다');
+    }
   }catch(e){
-    console.error(e);
-    $('identityWorkspaceSelect').innerHTML='<option value="">이벤트 목록을 불러오지 못했습니다</option>';
-    if($('switchWorkspaceSelect')) $('switchWorkspaceSelect').innerHTML='<option value="">이벤트 목록을 불러오지 못했습니다</option>';
+    console.error('workspaces 목록 불러오기 실패:',e);
+    workspaceOptions=[];
+
+    if(select) select.innerHTML='<option value="">이벤트 목록을 불러오지 못했습니다</option>';
+    if(switchSelect) switchSelect.innerHTML='<option value="">이벤트 목록을 불러오지 못했습니다</option>';
+
+    if($('workspaceHelpText')){
+      $('workspaceHelpText').textContent=isGlobalAdmin
+        ? '목록을 불러오지 못했지만 관리자는 새 이벤트를 만들 수 있습니다.'
+        : '이벤트 목록을 불러오지 못했습니다. 관리자에게 문의해주세요.';
+    }
+
+    if($('adminFirstEventText')){
+      $('adminFirstEventText').textContent='목록 오류와 관계없이 새 이벤트를 만들 수 있습니다.';
+    }
+
+    if($('joinEventButton')){
+      $('joinEventButton').disabled=true;
+      $('joinEventButton').style.opacity='.45';
+      $('joinEventButton').style.cursor='not-allowed';
+    }
+
+    const entry=$('adminCreateEntry');
+    if(entry){
+      entry.classList.toggle('on',isGlobalAdmin);
+      entry.style.display=isGlobalAdmin?'block':'none';
+    }
+
     if(showMessage) toast('이벤트 목록을 불러오지 못했습니다');
   }
 };
