@@ -1547,7 +1547,7 @@ let editingExp=null,editingBg=null,editingCk=null,pendingReceipt=null;
 let ckFilterVal='전체';
 let pendingExcelImport=null;
 let homeDoneOpen=false;
-let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='pending',members=[],auditLogs=[],unsubs=[];
+let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='pending',members=[],auditLogs=[],workspaceOptions=[],isGlobalAdmin=false,unsubs=[];
 const col=name=>collection(db,'workspaces',currentWorkspace,name);
 const settingsRef=()=>doc(db,'workspaces',currentWorkspace,'meta','settings');
 const workspaceRef=()=>doc(db,'workspaces',currentWorkspace);
