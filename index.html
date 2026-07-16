@@ -844,28 +844,6 @@ nav button.on{color:var(--green)}
   font-weight:900;
   cursor:pointer;
 }
-.admin-status-box{
-  margin-top:16px;
-  padding:12px 13px;
-  border:1px solid var(--line);
-  border-radius:12px;
-  background:var(--black-soft);
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.55;
-}
-.admin-status-box strong{color:var(--ink)}
-.uid-code{
-  display:block;
-  margin-top:5px;
-  padding:7px 8px;
-  overflow-wrap:anywhere;
-  border-radius:8px;
-  background:var(--code-bg);
-  color:var(--ink);
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:10px;
-}
 @media(max-width:560px){
   .identity-overlay{padding:14px}
   .identity-card{padding:24px 20px;border-radius:22px}
@@ -957,7 +935,6 @@ body.workspace-ready > nav{
 .event-current{display:inline-flex;padding:3px 7px;border-radius:999px;background:var(--green-soft);color:var(--green-dark);font-size:10px;font-weight:900}
 .event-manage-actions{display:flex;gap:6px}
 .event-manage-actions button{padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:11px;font-weight:800;cursor:pointer}
-.logout-button{color:var(--danger)!important}
 
 </style>
 </head>
@@ -1268,8 +1245,8 @@ body.workspace-ready > nav{
     </div>
 
     <div id="joinIdentityView">
-      <h2>이벤트에 참여하기</h2>
-      <div class="identity-desc">사용자 이름을 입력하고 참여할 이벤트를 선택해주세요.</div>
+      <h2>이벤트 입장</h2>
+      <div class="identity-desc">이름을 입력하고 이벤트를 선택해주세요.</div>
 
       <label class="fld">사용자 이름</label>
       <input id="identityName" placeholder="이름을 입력하세요" autocomplete="name">
@@ -1280,7 +1257,7 @@ body.workspace-ready > nav{
       </select>
 
       <div class="event-select-help">
-        <span id="workspaceHelpText">목록에 없다면 관리자에게 문의해주세요.</span>
+        <span id="workspaceHelpText">참여할 이벤트를 선택해주세요.</span>
         <button type="button" onclick="loadWorkspaceOptions(true)">새로고침</button>
       </div>
 
@@ -1289,16 +1266,7 @@ body.workspace-ready > nav{
         <button type="button" class="admin-create-button" onclick="setIdentityMode('create')">＋ 새 이벤트 만들기</button>
       </div>
 
-      <button type="button" class="btn pri identity-primary" id="joinEventButton" onclick="submitIdentity()">이벤트 참여 요청</button>
-
-      <div class="identity-note">
-        처음 참여하는 사용자는 관리자의 승인 후 이벤트 내용을 확인하거나 수정할 수 있습니다.
-      </div>
-
-      <div class="admin-status-box">
-        <strong>관리자 등록에 필요한 내 UID</strong>
-        <span class="uid-code" id="identityUid">연결 중…</span>
-      </div>
+      <button type="button" class="btn pri identity-primary" id="joinEventButton" onclick="submitIdentity()">입장하기</button>
     </div>
 
     <div class="identity-create-box" id="createIdentityView">
@@ -1341,7 +1309,6 @@ body.workspace-ready > nav{
       <button type="button" id="eventManageMenuButton" onclick="openAccountPanel('events')" style="display:none"><span>이벤트 관리</span><span>›</span></button>
       <button type="button" id="importMenuButton" onclick="openAccountPanel('import')"><span>엑셀 데이터 가져오기</span><span>›</span></button>
       <button type="button" id="adminMenuButton" onclick="openAccountPanel('admin')" style="display:none"><span>사용자 및 권한 관리</span><span>›</span></button>
-      <button type="button" class="logout-button" onclick="logoutApp()"><span>로그아웃</span><span>›</span></button>
     </div>
 
     <div class="account-panel" id="profilePanel">
@@ -1358,7 +1325,7 @@ body.workspace-ready > nav{
         <option value="">이벤트 목록을 불러오는 중입니다</option>
       </select>
       <button class="btn pri" style="width:100%;margin-top:12px" onclick="joinSwitch()">이벤트로 이동</button>
-      <div class="identity-note">처음 참여하는 이벤트라면 관리자 승인 대기 상태로 등록됩니다.</div>
+      <div class="identity-note">처음 선택한 이벤트에도 바로 입장할 수 있습니다.</div>
     </div>
 
 
@@ -1447,7 +1414,7 @@ const firebaseConfig = {
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDoc, getDocs, runTransaction, serverTimestamp, query, orderBy, limit, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const DEFAULT_WORKSPACE='EVENT2026';
 const USER_KEY='pod_v2_user_name', WORKSPACE_KEY='pod_v2_workspace';
@@ -1614,7 +1581,6 @@ async function boot(){
 
     const credential=await signInAnonymously(auth);
     currentUid=credential.user.uid;
-    $('identityUid').textContent=currentUid;
 
     await loadGlobalAdminStatus();
     await loadWorkspaceOptions();
@@ -1702,7 +1668,6 @@ async function loadGlobalAdminStatus(){
     entry.style.display=isGlobalAdmin?'block':'none';
   }
 
-  if($('identityUid')) $('identityUid').textContent=currentUid||'UID 확인 실패';
 
   return isGlobalAdmin;
 }
@@ -1896,7 +1861,7 @@ window.submitIdentity=async()=>{
       if(!memberSnapshot.exists()){
         await setDoc(memberDocument,{
           displayName:name,
-          role:'pending',
+          role:'editor',
           joinedAt:serverTimestamp()
         });
       }else{
@@ -1906,7 +1871,7 @@ window.submitIdentity=async()=>{
 
     saveLocal(WORKSPACE_KEY,code);
     await enterWorkspace(code);
-    await writeLog(createMode?'이벤트 생성':'이벤트 참여 요청','workspace',code,null,{name});
+    await writeLog(createMode?'이벤트 생성':'이벤트 입장','workspace',code,null,{name});
   }catch(e){
     console.error(e);
     toast(e.message==='EXISTS'?'이미 사용 중인 이벤트 코드입니다':'처리 중 오류가 발생했습니다');
@@ -2007,20 +1972,6 @@ window.switchManagedEvent=async code=>{
   toast('이벤트를 전환했습니다');
 };
 
-window.logoutApp=async()=>{
-  if(!confirm('로그아웃할까요? 이 기기의 사용자 이름과 이벤트 선택 정보가 초기화됩니다.')) return;
-  try{
-    unsubs.forEach(fn=>{try{fn()}catch(e){}});
-    unsubs=[];
-    saveLocal(USER_KEY,'');
-    saveLocal(WORKSPACE_KEY,'');
-    await signOut(auth);
-    location.reload();
-  }catch(e){
-    console.error(e);
-    toast('로그아웃에 실패했습니다');
-  }
-};
 
 window.saveDisplayName=async()=>{const n=$('accountNameInput').value.trim();if(!n)return;const old=localName();saveLocal(USER_KEY,n);await setDoc(memberRef(),{displayName:n,updatedAt:serverTimestamp()},{merge:true});renderAccountUI();renderMyName();await writeLog('사용자 ID 변경','member',currentUid,{name:old},{name:n});toast('변경되었습니다')};
 window.joinSwitch=async()=>{
@@ -2045,7 +1996,7 @@ window.joinSwitch=async()=>{
   if(!memberSnapshot.exists()){
     await setDoc(memberDocument,{
       displayName:localName(),
-      role:'pending',
+      role:'editor',
       joinedAt:serverTimestamp()
     });
   }
