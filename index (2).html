@@ -180,9 +180,9 @@ nav button.on{color:var(--green)}
 </div>
 
 <header>
-  <div class="hd-label" id="hdLabel">Pod Church · Program Finance</div>
-  <div class="hd-title" id="hdTitle">운동회 & 푸드트럭 <button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button></div>
-  <div class="hd-sub" id="hdSub">2026.10.04 (토) · 프로그램팀 회계</div>
+  <div class="hd-label" id="hdLabel">POD CHURCH ACCOUNTING PROGRAM</div>
+  <div class="hd-title" id="hdTitle">POD CHURCH ACCOUNTING<button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button></div>
+  <div class="hd-sub" id="hdSub">POD CHURCH ACCOUNTING</div>
   <div class="sync" id="syncBadge">연결 중…</div>
 </header>
 
@@ -249,7 +249,7 @@ nav button.on{color:var(--green)}
 
 <!-- ═══ 정산 ═══ -->
 <section class="tab" id="tab-settle">
-  <div class="print-title" id="printTitle">운동회 & 푸드트럭 정산서</div>
+  <div class="print-title" id="printTitle">정산서</div>
   <div class="card">
     <div class="sec-title">예산 대비 정산</div>
     <table id="settleTable"></table>
@@ -419,7 +419,7 @@ import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "ht
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const EVENT='event2026';   // 행사 구분 키 (다음 행사 땐 이 값만 바꾸면 새 장부가 됩니다)
-const DEFAULT_CATS=['운동회','푸드트럭','공통','예비비'];
+const DEFAULT_CATS=['CATEGORY1','CATEGORY2','CATEGORY3'];
 const CHIP_PAL=[
   {bg:'#3A2415',fg:'#FF9A57'},{bg:'#2C2A27',fg:'#CFC9C0'},
   {bg:'#26241F',fg:'#A29B90'},{bg:'#332A16',fg:'#E0A94F'},
@@ -448,7 +448,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
 let S={budget:[],expenses:[],checklist:[],cats:[...DEFAULT_CATS],catColors:{},
-  meta:{label:'Pod Church · Program Finance',title:'운동회 & 푸드트럭',sub:'2026.10.04 (토) · 프로그램팀 회계'}};
+  meta:{label:'POD CHURCH',title:'ACCOUNTING PROGRAM',sub:'포드처치 회계 프로그램'}};
 let editingExp=null,editingBg=null,editingCk=null,pendingReceipt=null;
 let ckFilterVal='전체';
 let db=null;
