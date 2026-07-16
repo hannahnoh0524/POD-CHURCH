@@ -6,8 +6,32 @@
 <meta name="theme-color" content="#121110">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="POD CHURCH ACCOUNTING">
+
+<script>
+(function(){
+  const key='pod_theme';
+  let saved='';
+  try{ saved=localStorage.getItem(key)||''; }catch(e){}
+  const theme=(saved==='light'||saved==='dark')
+    ? saved
+    : (window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+
+  document.documentElement.dataset.theme=theme;
+  document.documentElement.style.colorScheme=theme;
+
+  const themeMeta=document.querySelector('meta[name="theme-color"]');
+  if(themeMeta){
+    themeMeta.setAttribute('content',theme==='dark'?'#121110':'#F7F6F3');
+  }
+
+  const statusMeta=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+  if(statusMeta){
+    statusMeta.setAttribute('content',theme==='dark'?'black':'default');
+  }
+})();
+</script>
 
 <title>POD CHURCH ACCOUNTING PROGRAM</title>
 <meta name="description" content="POD CHURCH 회계 프로그램">
@@ -30,27 +54,159 @@
   --track:#E14B4B; --track-soft:#3A1B18;                          /* 예산 초과 경고 = 빨강 */
   --danger:#F06A5C; --danger-soft:#361D1A;
   --amber:#E0A94F; --amber-soft:#332A16;
+
+  --input:#232220;
+  --lane-a:#232120;
+  --lane-b:#1A1918;
+  --bar-bg:#262421;
+  --sync-bg:#26241F;
+  --nav-muted:#6E6961;
+  --toast-bg:#F2EFEA;
+  --toast-ink:#161513;
+  --code-bg:#2A2825;
+  --picker-bg:#232220;
+  --check-border:#4A463F;
+  --no-thumb:#57534C;
+  --overlay:rgba(0,0,0,.62);
+
   --r:14px;
   font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
 }
+
+html[data-theme="light"]{
+  color-scheme:light;
+
+  --green:#F4650F;
+  --green-dark:#B94704;
+  --green-soft:#FFF0E6;
+
+  --black:#201E1B;
+  --black-soft:#F1EEE9;
+
+  --bg:#F7F6F3;
+  --card:#FFFFFF;
+  --line:#E4E0DA;
+
+  --ink:#201E1B;
+  --muted:#756F67;
+
+  --track:#D94A3A;
+  --track-soft:#FDE8E3;
+
+  --danger:#C84435;
+  --danger-soft:#FCE9E6;
+
+  --amber:#A66D13;
+  --amber-soft:#FFF4D9;
+
+  --input:#FAF9F7;
+  --lane-a:#F1EEE9;
+  --lane-b:#E6E1DA;
+  --bar-bg:#ECE8E2;
+  --sync-bg:#F1EEE9;
+  --nav-muted:#8D867D;
+  --toast-bg:#201E1B;
+  --toast-ink:#FFFFFF;
+  --code-bg:#EEEAE4;
+  --picker-bg:#F7F5F1;
+  --check-border:#AAA298;
+  --no-thumb:#8E877E;
+  --overlay:rgba(20,18,16,.38);
+}
+
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{color-scheme:dark}
 html,body{background:var(--bg);color:var(--ink);font-family:inherit}
-body{max-width:560px;margin:0 auto;min-height:100vh;padding-bottom:84px}
+body{
+  max-width:560px;
+  margin:0 auto;
+  min-height:100vh;
+  padding-bottom:84px;
+  transition:background-color .2s ease,color .2s ease;
+}
 
-header{padding:20px 18px 12px;position:relative}
-.hd-label{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--green);text-transform:uppercase}
-.hd-title{font-size:22px;font-weight:800;margin-top:2px}
+header{
+  padding:calc(22px + env(safe-area-inset-top)) 18px 12px;
+  position:relative;
+}
+.header-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-width:0;
+}
+.header-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  flex-shrink:0;
+}
+.hd-label{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.14em;
+  color:var(--green);
+  text-transform:uppercase;
+}
+.hd-title{font-size:22px;font-weight:800;margin-top:8px}
 .hd-sub{font-size:13px;color:var(--muted);margin-top:3px}
-.sync{position:absolute;right:18px;top:24px;font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px;background:#26241F;color:var(--muted)}
+.sync{
+  position:static;
+  font-size:11px;
+  font-weight:800;
+  padding:5px 10px;
+  border-radius:20px;
+  background:var(--sync-bg);
+  color:var(--muted);
+  white-space:nowrap;
+}
 .sync.on{background:var(--green-soft);color:var(--green-dark)}
 .sync.err{background:var(--danger-soft);color:var(--danger)}
+.theme-toggle{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:var(--card);
+  color:var(--ink);
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+  font-size:17px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 1px 4px rgba(0,0,0,.12);
+}
+.theme-toggle:active{transform:scale(.94)}
+@media(max-width:390px){
+  .sync{font-size:10px;padding:5px 8px}
+  .theme-toggle{width:32px;height:32px;flex-basis:32px}
+}
 
 main{padding:0 14px}
 .tab{display:none}
 .tab.on{display:block;animation:fade .18s ease}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  padding:16px;
+  margin-bottom:12px;
+  transition:background-color .2s ease,border-color .2s ease;
+}
+
+html[data-theme="light"] .card{
+  box-shadow:0 2px 12px rgba(64,52,41,.055);
+}
 .sec-title{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
 .sec-title small{font-size:12px;font-weight:600;color:var(--muted)}
 .empty{padding:26px 10px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
@@ -65,7 +221,7 @@ main{padding:0 14px}
 .stat b{display:block;font-size:16px;margin-top:2px}
 .stat span{font-size:11px;font-weight:700;color:var(--muted)}
 .lane{margin-top:16px}
-.lane-track{--runner-pos:0%;position:relative;height:30px;border-radius:15px;background:repeating-linear-gradient(90deg,#232120 0 18px,#1A1918 18px 36px);border:1px solid var(--line);overflow:hidden}
+.lane-track{--runner-pos:0%;position:relative;height:30px;border-radius:15px;background:repeating-linear-gradient(90deg,var(--lane-a) 0 18px,var(--lane-b) 18px 36px);border:1px solid var(--line);overflow:hidden}
 .lane-fill{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,#F4650F,#FF9040);border-radius:15px;transition:width .5s ease}
 .lane-fill.over{background:linear-gradient(90deg,#D62E2E,#E85555)}
 .lane-runner{
@@ -87,7 +243,7 @@ main{padding:0 14px}
 .lane-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-weight:600}
 .cat-bar .row{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:8px}
 .cat-bar .nm{width:72px;font-weight:700;flex-shrink:0}
-.cat-bar .bar{flex:1;height:8px;background:#262421;border-radius:4px;overflow:hidden}
+.cat-bar .bar{flex:1;height:8px;background:var(--bar-bg);border-radius:4px;overflow:hidden}
 .cat-bar .bar i{display:block;height:100%;background:var(--green);border-radius:4px}
 .cat-bar .amt{font-size:12px;color:var(--muted);width:110px;text-align:right;flex-shrink:0}
 
@@ -102,15 +258,15 @@ main{padding:0 14px}
 .item .amt .sub.ok{color:var(--green)}
 .chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px;background:var(--green-soft);color:var(--green-dark);margin-right:5px;vertical-align:1px}
 .chip.orange{background:var(--track-soft);color:#a04a12}
-.chip.gray{background:#26241F;color:var(--muted)}
+.chip.gray{background:var(--sync-bg);color:var(--muted)}
 .chip.amber{background:var(--amber-soft);color:var(--amber)}
 .thumb{width:42px;height:42px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex-shrink:0;cursor:pointer;background:#f0f0ee}
 .grp{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;color:var(--muted);padding:14px 2px 5px;border-bottom:1px solid var(--line)}
 .grp:first-child{padding-top:4px}
 .grp .sum{font-variant-numeric:tabular-nums;color:var(--ink)}
-.no-thumb{width:42px;height:42px;border-radius:8px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:15px;color:#57534C;flex-shrink:0}
+.no-thumb{width:42px;height:42px;border-radius:8px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--no-thumb);flex-shrink:0}
 
-.ck{width:22px;height:22px;border-radius:7px;border:2px solid #4A463F;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;cursor:pointer;transition:.15s}
+.ck{width:22px;height:22px;border-radius:7px;border:2px solid var(--check-border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;cursor:pointer;transition:.15s}
 .ck.doing{border-color:var(--amber);background:var(--amber-soft)}
 .ck.done{border-color:#F4650F;background:#F4650F}
 .item.done .t1{text-decoration:line-through;color:var(--muted);font-weight:600}
@@ -126,7 +282,7 @@ main{padding:0 14px}
 .btn-row{display:flex;gap:8px;flex-wrap:wrap}
 .btn-row .btn{flex:1}
 label.fld{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:12px 0 5px}
-input[type=text],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-family:inherit;font-size:15px;background:#232220;color:var(--ink)}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-family:inherit;font-size:15px;background:var(--input);color:var(--ink)}
 input:focus,select:focus{outline:2px solid var(--green);outline-offset:-1px}
 .fld-row{display:flex;gap:8px}
 .fld-row>div{flex:1}
@@ -137,7 +293,7 @@ input:focus,select:focus{outline:2px solid var(--green);outline-offset:-1px}
 .toggle-row input{width:20px;height:20px;accent-color:var(--green)}
 
 /* 모달 */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:50;align-items:flex-end;justify-content:center}
+.modal-bg{display:none;position:fixed;inset:0;background:var(--overlay);z-index:50;align-items:flex-end;justify-content:center}
 .modal-bg.on{display:flex}
 .modal{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px 26px;max-height:88vh;overflow-y:auto;animation:up .22s ease}
 @keyframes up{from{transform:translateY(40px);opacity:.5}to{transform:none;opacity:1}}
@@ -146,6 +302,9 @@ input:focus,select:focus{outline:2px solid var(--green);outline-offset:-1px}
 .photo-view{align-items:center}
 .photo-view .modal{border-radius:16px;margin:16px;text-align:center}
 .photo-view img{max-width:100%;max-height:70vh;border-radius:10px}
+.receipt-source-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.receipt-source-btn{width:100%;min-height:46px}
+.receipt-source-btn svg{flex-shrink:0}
 .receipt-drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;font-weight:600}
 .receipt-drop.has{border-style:solid;border-color:var(--green);color:var(--green-dark);background:var(--green-soft)}
 .receipt-prev{max-width:100%;max-height:160px;border-radius:10px;margin-top:8px;display:none}
@@ -155,7 +314,7 @@ input:focus,select:focus{outline:2px solid var(--green);outline-offset:-1px}
 .color-picker-title{margin-bottom:4px}
 .color-picker-sub{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:16px}
 .color-picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.color-choice{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:16px;background:#232220;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.color-choice{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:16px;background:var(--picker-bg);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .color-choice:active{transform:scale(.96)}
 .color-choice .swatch{width:48px;height:48px;border-radius:50%;border:3px solid rgba(255,255,255,.16);box-shadow:0 0 0 1px rgba(0,0,0,.28)}
 .color-choice .check{display:none;position:absolute;right:8px;top:8px;width:22px;height:22px;border-radius:50%;background:#fff;color:#111;font-size:14px;font-weight:900;align-items:center;justify-content:center}
@@ -182,13 +341,13 @@ tr.total td{font-weight:800;border-top:2px solid #55504A;border-bottom:none}
 #setupOverlay{position:fixed;inset:0;background:var(--bg);z-index:99;display:none;align-items:center;justify-content:center;padding:24px}
 #setupOverlay.on{display:flex}
 #setupOverlay .box{max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;font-size:14px;line-height:1.7}
-#setupOverlay code{background:#2A2825;border-radius:4px;padding:1px 5px;font-size:12px}
+#setupOverlay code{background:var(--code-bg);border-radius:4px;padding:1px 5px;font-size:12px}
 
 nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}
-nav button{flex:1;background:none;border:none;font-family:inherit;padding:9px 0 8px;cursor:pointer;color:#6E6961;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button{flex:1;background:none;border:none;font-family:inherit;padding:9px 0 8px;cursor:pointer;color:var(--nav-muted);font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
 nav button .ico{width:20px;height:20px}
 nav button.on{color:var(--green)}
-.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#F2EFEA;color:#161513;font-size:13px;font-weight:600;padding:10px 18px;border-radius:24px;z-index:60;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-ink);font-size:13px;font-weight:600;padding:10px 18px;border-radius:24px;z-index:60;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1}
 
 @media print{
@@ -217,10 +376,25 @@ nav button.on{color:var(--green)}
 </div>
 
 <header>
-  <div class="hd-label" id="hdLabel">POD CHURCH ACCOUNTING PROGRAM</div>
+  <div class="header-top">
+    <div class="hd-label" id="hdLabel">POD CHURCH ACCOUNTING PROGRAM</div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="theme-toggle"
+        id="themeToggle"
+        onclick="toggleTheme()"
+        aria-label="화면 테마 변경"
+        title="화면 테마 변경"
+      >☀️</button>
+
+      <div class="sync" id="syncBadge">연결 중…</div>
+    </div>
+  </div>
+
   <div class="hd-title" id="hdTitle">POD CHURCH ACCOUNTING<button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button></div>
   <div class="hd-sub" id="hdSub">POD CHURCH ACCOUNTING</div>
-  <div class="sync" id="syncBadge">연결 중…</div>
 </header>
 
 <main>
@@ -350,8 +524,33 @@ nav button.on{color:var(--green)}
       <input type="checkbox" id="expReimbursed"><label for="expReimbursed">환급 완료</label>
     </div>
     <label class="fld">영수증 사진</label>
-    <div class="receipt-drop" id="receiptDrop" onclick="document.getElementById('receiptInput').click()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><path d="M4 7h3l2-2.5h6L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg>촬영 또는 사진 선택</div>
-    <input type="file" id="receiptInput" accept="image/*" capture="environment" style="display:none" onchange="onReceiptPick(this)">
+
+    <div class="receipt-source-row">
+      <button type="button" class="btn ghost receipt-source-btn" onclick="document.getElementById('receiptCameraInput').click()">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 7h3l2-2.5h6L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/>
+          <circle cx="12" cy="13.5" r="3.5"/>
+        </svg>
+        사진 촬영
+      </button>
+
+      <button type="button" class="btn ghost receipt-source-btn" onclick="document.getElementById('receiptGalleryInput').click()">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="2"/>
+          <circle cx="8.5" cy="9" r="1.5"/>
+          <path d="m4 17 4.5-4.5 3.5 3 2.5-2.5L20 18"/>
+        </svg>
+        사진첩 / 파일
+      </button>
+    </div>
+
+    <div class="receipt-drop" id="receiptDrop" onclick="document.getElementById('receiptGalleryInput').click()">
+      영수증을 촬영하거나 사진첩·파일에서 선택하세요
+    </div>
+
+    <input type="file" id="receiptCameraInput" accept="image/*" capture="environment" style="display:none" onchange="onReceiptPick(this)">
+    <input type="file" id="receiptGalleryInput" accept="image/*,.heic,.heif" style="display:none" onchange="onReceiptPick(this)">
+
     <img class="receipt-prev" id="receiptPrev" alt="영수증 미리보기">
     <div style="margin-top:16px" class="btn-row">
       <button class="btn pri" id="expSaveBtn" onclick="saveExpense()">저장</button>
@@ -496,6 +695,76 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const won=n=>(n||0).toLocaleString('ko-KR')+'원';
 const $=id=>document.getElementById(id);
 const esc=s=>(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+
+/* ── 다크 / 라이트 테마 ── */
+const THEME_KEY='pod_theme';
+
+function savedTheme(){
+  try{
+    const value=localStorage.getItem(THEME_KEY);
+    return value==='light'||value==='dark'?value:'';
+  }catch(e){
+    return '';
+  }
+}
+
+function systemTheme(){
+  return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
+
+function applyTheme(theme,save=false){
+  const next=theme==='light'?'light':'dark';
+
+  document.documentElement.dataset.theme=next;
+  document.documentElement.style.colorScheme=next;
+
+  const themeMeta=document.querySelector('meta[name="theme-color"]');
+  if(themeMeta){
+    themeMeta.setAttribute('content',next==='dark'?'#121110':'#F7F6F3');
+  }
+
+  const statusMeta=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+  if(statusMeta){
+    statusMeta.setAttribute('content',next==='dark'?'black':'default');
+  }
+
+  const button=$('themeToggle');
+  if(button){
+    const isDark=next==='dark';
+    button.textContent=isDark?'☀️':'🌙';
+    button.title=isDark?'라이트 모드로 전환':'다크 모드로 전환';
+    button.setAttribute('aria-label',button.title);
+  }
+
+  if(save){
+    try{ localStorage.setItem(THEME_KEY,next); }catch(e){}
+  }
+}
+
+window.toggleTheme=()=>{
+  const current=document.documentElement.dataset.theme||systemTheme();
+  applyTheme(current==='dark'?'light':'dark',true);
+};
+
+const themeQuery=window.matchMedia
+  ? window.matchMedia('(prefers-color-scheme: dark)')
+  : null;
+
+if(themeQuery){
+  const onSystemThemeChange=e=>{
+    if(!savedTheme()){
+      applyTheme(e.matches?'dark':'light',false);
+    }
+  };
+
+  if(themeQuery.addEventListener){
+    themeQuery.addEventListener('change',onSystemThemeChange);
+  }else if(themeQuery.addListener){
+    themeQuery.addListener(onSystemThemeChange);
+  }
+}
 
 let S={budget:[],expenses:[],checklist:[],cats:[...DEFAULT_CATS],catColors:{},
   meta:{label:'POD CHURCH',title:'ACCOUNTING PROGRAM',sub:'포드처치 회계 프로그램'}};
@@ -792,7 +1061,7 @@ window.openExpModal=id=>{
   onMethodChange();
   const img=editingExp?editingExp.receipt:null;
   $('receiptDrop').className='receipt-drop'+(img?' has':'');
-  $('receiptDrop').innerHTML=img?'✓ 영수증 첨부됨 (탭하여 변경)':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><path d="M4 7h3l2-2.5h6L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg>촬영 또는 사진 선택';
+  $('receiptDrop').innerHTML=img?'✓ 영수증 첨부됨 (탭하면 사진첩·파일에서 변경)':'영수증을 촬영하거나 사진첩·파일에서 선택하세요';
   $('receiptPrev').style.display=img?'block':'none';
   if(img)$('receiptPrev').src=img;
   $('expDeleteBtn').style.display=editingExp?'block':'none';
@@ -813,7 +1082,7 @@ window.onReceiptPick=input=>{
       if(out.length>850000) out=cv.toDataURL('image/jpeg',0.35); // 안전장치
       pendingReceipt=out;
       $('receiptDrop').className='receipt-drop has';
-      $('receiptDrop').innerHTML='✓ 영수증 첨부됨 (탭하여 변경)';
+      $('receiptDrop').innerHTML='✓ 영수증 첨부됨 (탭하면 사진첩·파일에서 변경)';
       $('receiptPrev').src=pendingReceipt;
       $('receiptPrev').style.display='block';
     };
@@ -1103,6 +1372,7 @@ window.toast=msg=>{
   clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('on'),2200);
 };
 
+applyTheme(document.documentElement.dataset.theme||savedTheme()||systemTheme(),false);
 boot();
 </script>
 </body>
