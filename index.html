@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="POD CHURCH ACCOUNTING">
+<meta name="apple-mobile-web-app-title" content="POD CHURCH | Accounting Program">
 
 <script>
 (function(){
@@ -33,13 +33,13 @@
 })();
 </script>
 
-<title>POD CHURCH ACCOUNTING PROGRAM</title>
+<title>POD CHURCH | Accounting Program</title>
 <meta name="description" content="POD CHURCH 회계 프로그램">
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ko_KR">
-<meta property="og:title" content="POD CHURCH ACCOUNTING PROGRAM">
-<meta property="og:description" content="POD CHURCH 회계 프로그램">
+<meta property="og:title" content="POD CHURCH | Accounting Program">
+<meta property="og:description" content="POD CHURCH | Accounting Program">
 <meta property="og:url" content="https://hannahnoh0524.github.io/POD-CHURCH/">
 
 <link rel="canonical" href="https://hannahnoh0524.github.io/POD-CHURCH/">
@@ -870,6 +870,23 @@ nav button.on{color:var(--green)}
   .identity-card{padding:24px 20px;border-radius:22px}
 }
 
+
+/* ── POD CHURCH V2 진입 안정화 ── */
+body:not(.workspace-ready) > header,
+body:not(.workspace-ready) > main,
+body:not(.workspace-ready) > nav{
+  visibility:hidden;
+}
+body.workspace-ready > header,
+body.workspace-ready > main,
+body.workspace-ready > nav{
+  visibility:visible;
+}
+.platform-name-fixed{
+  text-transform:none!important;
+  letter-spacing:.08em!important;
+}
+
 </style>
 </head>
 <body>
@@ -885,7 +902,7 @@ nav button.on{color:var(--green)}
 
 <header>
   <div class="header-top">
-    <div class="hd-label" id="hdLabel">POD CHURCH ACCOUNTING PROGRAM</div>
+    <div class="hd-label platform-name-fixed" id="hdLabel">POD CHURCH | Accounting Program</div>
 
     <div class="header-actions">
       <button type="button" class="user-toggle" id="userToggle" onclick="openAccountModal()" aria-label="사용자 및 이벤트 설정"><span class="user-avatar" id="userAvatar">?</span></button>
@@ -1168,13 +1185,13 @@ nav button.on{color:var(--green)}
 </div>
 
 
-<div class="identity-overlay" id="identityOverlay">
+<div class="identity-overlay on" id="identityOverlay">
   <div class="identity-card">
     <div class="identity-logo-line">
       <div class="identity-logo">POD</div>
       <div class="identity-brand-copy">
-        <strong>POD CHURCH</strong>
-        <span>ACCOUNTING PROGRAM</span>
+        <strong>POD CHURCH | Accounting Program</strong>
+        <span>Event accounting workspace</span>
       </div>
     </div>
 
@@ -1332,7 +1349,7 @@ import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDoc, g
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const DEFAULT_WORKSPACE='EVENT2026';
-const USER_KEY='pod_user_name', WORKSPACE_KEY='pod_workspace';
+const USER_KEY='pod_v2_user_name', WORKSPACE_KEY='pod_v2_workspace';
 const DEFAULT_CATS=['Category1','Category2','Category3'];
 const CHIP_PAL=[
   {name:'빨강', bg:'#EF4444', fg:'#FFFFFF', border:'#EF4444'},
@@ -1456,6 +1473,9 @@ function requireEdit(){if(canEdit())return true;toast(currentRole==='pending'?'�
 
 /* ── 초기화 ── */
 async function boot(){
+  document.body.classList.remove('workspace-ready');
+  $('identityOverlay').classList.add('on');
+
   if(firebaseConfig.apiKey.includes('여기에')){
     $('setupOverlay').classList.add('on');
     return;
@@ -1473,20 +1493,35 @@ async function boot(){
     await loadGlobalAdminStatus();
     await loadWorkspaceOptions();
 
+    $('identityName').value=localName();
+
     const saved=savedWorkspace();
     const validSaved=saved&&workspaceOptions.some(w=>w.id===saved);
 
     if(!localName()||!validSaved){
       if(saved&&!validSaved) saveLocal(WORKSPACE_KEY,'');
-      $('identityName').value=localName();
-      $('identityOverlay').classList.add('on');
+      setSync(false);
       return;
     }
 
-    await enterWorkspace(saved);
+    try{
+      await enterWorkspace(saved);
+    }catch(e){
+      console.error(e);
+      saveLocal(WORKSPACE_KEY,'');
+      currentWorkspace='';
+      currentWorkspaceName='';
+      document.body.classList.remove('workspace-ready');
+      $('identityOverlay').classList.add('on');
+      setSync(false,true);
+      toast('기존 이벤트 연결에 실패했습니다. 이벤트를 다시 선택해주세요.');
+    }
   }catch(e){
     console.error(e);
+    document.body.classList.remove('workspace-ready');
+    $('identityOverlay').classList.add('on');
     setSync(false,true);
+    toast('Firebase 연결에 실패했습니다. 인증과 보안 규칙을 확인해주세요.');
   }
 }
 async function enterWorkspace(code){
@@ -1494,6 +1529,8 @@ async function enterWorkspace(code){
   const ws=await getDoc(workspaceRef());if(!ws.exists())throw new Error('NOT_FOUND');currentWorkspaceName=ws.data().name||currentWorkspace;
   let ms=await getDoc(memberRef());if(!ms.exists()){await setDoc(memberRef(),{displayName:localName(),role:'pending',joinedAt:serverTimestamp()});ms=await getDoc(memberRef())}currentRole=ms.data().role||'pending';
   bindSnapshots();renderAccountUI();applyPermissions();
+  document.body.classList.add('workspace-ready');
+  $('identityOverlay').classList.remove('on');
 }
 function bindSnapshots(){
   unsubs.push(onSnapshot(settingsRef(),snap=>{const d=snap.data();if(d&&Array.isArray(d.cats)&&d.cats.length)S.cats=d.cats;if(d&&d.catColors)S.catColors=d.catColors;if(d){if(d.title!==undefined)S.meta.title=d.title;if(d.sub!==undefined)S.meta.sub=d.sub;if(d.label!==undefined)S.meta.label=d.label}renderHeader();renderAll()}));
@@ -1642,7 +1679,7 @@ window.submitIdentity=async()=>{
         tx.set(doc(db,'workspaces',code,'meta','settings'),{
           label:'POD CHURCH',
           title:eventName,
-          sub:'POD CHURCH ACCOUNTING',
+          sub:'POD CHURCH | Accounting Program',
           cats:[...DEFAULT_CATS],
           catColors:{}
         });
@@ -1674,7 +1711,6 @@ window.submitIdentity=async()=>{
     }
 
     saveLocal(WORKSPACE_KEY,code);
-    $('identityOverlay').classList.remove('on');
     await enterWorkspace(code);
     await writeLog(createMode?'이벤트 생성':'이벤트 참여 요청','workspace',code,null,{name});
   }catch(e){
@@ -2348,11 +2384,10 @@ window.exportReceipts=()=>{
 
 /* ── 제목 편집 ── */
 function renderHeader(){
-  $('hdLabel').textContent=S.meta.label;
-  $('hdTitle').innerHTML=esc(S.meta.title)+' <button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>';
-  $('hdSub').textContent=S.meta.sub;
-  $('printTitle').textContent=S.meta.title+(S.meta.sub?' · '+S.meta.sub:'');
-  document.title='POD CHURCH ACCOUNTING PROGRAM';
+  $('hdLabel').textContent='POD CHURCH | Accounting Program';
+  $('hdTitle').childNodes[0].nodeValue=(S.meta.title||currentWorkspaceName||'Event')+' ';
+  $('hdSub').textContent=S.meta.sub||'POD CHURCH | Accounting Program';
+  document.title='POD CHURCH | Accounting Program';
 }
 window.openMetaModal=()=>{
   $('metaLabel').value=S.meta.label;
