@@ -7,9 +7,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="POD CHURCH">
+<meta name="apple-mobile-web-app-title" content="POD CHURCH ACCOUNTING">
 
-<title>POD CHURCH ACCOUNTING PROGRAM | POD CHURCH 회계 프로그램</title>
+<title>POD CHURCH ACCOUNTING PROGRAM</title>
 <meta name="description" content="POD CHURCH 회계 프로그램">
 
 <meta property="og:type" content="website">
@@ -20,3896 +20,1090 @@
 
 <link rel="canonical" href="https://hannahnoh0524.github.io/POD-CHURCH/">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-
 <style>
 :root{
-  --green:#FF7326;
-  --green-dark:#FFA163;
-  --green-soft:#3A2415;
-
-  --black:#161513;
-  --black-soft:#262421;
-
-  --bg:#121110;
-  --card:#1C1B19;
-  --line:#2E2B27;
-
-  --ink:#F2EFEA;
-  --muted:#9A948B;
-
-  --track:#E14B4B;
-  --track-soft:#3A1B18;
-
-  --danger:#F06A5C;
-  --danger-soft:#361D1A;
-
-  --amber:#E0A94F;
-  --amber-soft:#332A16;
-
+  /* POD Church 코어 컬러: 검정 & 주황 (다크 테마) */
+  --green:#FF7326; --green-dark:#FFA163; --green-soft:#3A2415;   /* 주황 (브랜드 포인트) */
+  --black:#161513; --black-soft:#262421;
+  --bg:#121110; --card:#1C1B19; --line:#2E2B27;
+  --ink:#F2EFEA; --muted:#9A948B;
+  --track:#E14B4B; --track-soft:#3A1B18;                          /* 예산 초과 경고 = 빨강 */
+  --danger:#F06A5C; --danger-soft:#361D1A;
+  --amber:#E0A94F; --amber-soft:#332A16;
   --r:14px;
-
-  font-family:
-    'Pretendard Variable',
-    Pretendard,
-    -apple-system,
-    'Apple SD Gothic Neo',
-    'Malgun Gothic',
-    sans-serif;
+  font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
 }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{color-scheme:dark}
+html,body{background:var(--bg);color:var(--ink);font-family:inherit}
+body{max-width:560px;margin:0 auto;min-height:100vh;padding-bottom:84px}
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+header{padding:20px 18px 12px;position:relative}
+.hd-label{font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--green);text-transform:uppercase}
+.hd-title{font-size:22px;font-weight:800;margin-top:2px}
+.hd-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.sync{position:absolute;right:18px;top:24px;font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px;background:#26241F;color:var(--muted)}
+.sync.on{background:var(--green-soft);color:var(--green-dark)}
+.sync.err{background:var(--danger-soft);color:var(--danger)}
 
-html{
-  color-scheme:dark;
-}
-
-html,
-body{
-  background:var(--bg);
-  color:var(--ink);
-  font-family:inherit;
-}
-
-body{
-  max-width:560px;
-  margin:0 auto;
-  min-height:100vh;
-  padding-bottom:84px;
-}
-
-header{
-  padding:20px 18px 12px;
-  position:relative;
-}
-
-.hd-label{
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.14em;
-  color:var(--green);
-  text-transform:uppercase;
-}
-
-.hd-title{
-  font-size:22px;
-  font-weight:800;
-  margin-top:2px;
-}
-
-.hd-sub{
-  font-size:13px;
-  color:var(--muted);
-  margin-top:3px;
-}
-
-.sync{
-  position:absolute;
-  right:18px;
-  top:24px;
-  font-size:11px;
-  font-weight:800;
-  padding:5px 11px;
-  border-radius:20px;
-  background:#26241F;
-  color:var(--muted);
-}
-
-.sync.on{
-  background:var(--green-soft);
-  color:var(--green-dark);
-}
-
-.sync.err{
-  background:var(--danger-soft);
-  color:var(--danger);
-}
-
-main{
-  padding:0 14px;
-}
-
-.tab{
-  display:none;
-}
-
-.tab.on{
-  display:block;
-  animation:fade .18s ease;
-}
-
-@keyframes fade{
-  from{
-    opacity:0;
-    transform:translateY(4px);
-  }
-
-  to{
-    opacity:1;
-    transform:none;
-  }
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:var(--r);
-  padding:16px;
-  margin-bottom:12px;
-}
-
-.sec-title{
-  font-size:14px;
-  font-weight:800;
-  margin-bottom:10px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.sec-title small{
-  font-size:12px;
-  font-weight:600;
-  color:var(--muted);
-}
-
-.empty{
-  padding:26px 10px;
-  text-align:center;
-  color:var(--muted);
-  font-size:13px;
-  line-height:1.6;
-}
+main{padding:0 14px}
+.tab{display:none}
+.tab.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.sec-title{font-size:14px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.sec-title small{font-size:12px;font-weight:600;color:var(--muted)}
+.empty{padding:26px 10px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6}
 
 /* 대시보드 */
-
-.big-num{
-  font-size:30px;
-  font-weight:800;
-  letter-spacing:-.02em;
-}
-
-.big-num small{
-  font-size:14px;
-  font-weight:600;
-  color:var(--muted);
-  margin-left:2px;
-}
-
-.stat-row{
-  display:flex;
-  gap:10px;
-  margin-top:12px;
-}
-
-.stat{
-  flex:1;
-  background:var(--black-soft);
-  border-radius:10px;
-  padding:10px 12px;
-}
-
-.stat.orange{
-  background:var(--green-soft);
-}
-
-.stat.red{
-  background:var(--danger-soft);
-}
-
-.stat b{
-  display:block;
-  font-size:16px;
-  margin-top:2px;
-}
-
-.stat span{
-  font-size:11px;
-  font-weight:700;
-  color:var(--muted);
-}
-
-.lane{
-  margin-top:16px;
-}
-
-.lane-track{
-  position:relative;
-  height:26px;
-  border-radius:13px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      #232120 0 18px,
-      #1A1918 18px 36px
-    );
-  border:1px solid var(--line);
-  overflow:hidden;
-}
-
-.lane-fill{
-  position:absolute;
-  inset:0;
-  width:0%;
-  background:linear-gradient(90deg,#F4650F,#FF9040);
-  border-radius:13px;
-  transition:width .5s ease;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-}
-
-.lane-fill.over{
-  background:linear-gradient(90deg,#D62E2E,#E85555);
-}
-
+.big-num{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.big-num small{font-size:14px;font-weight:600;color:var(--muted);margin-left:2px}
+.stat-row{display:flex;gap:10px;margin-top:12px}
+.stat{flex:1;background:var(--black-soft);border-radius:10px;padding:10px 12px}
+.stat.orange{background:var(--green-soft)}
+.stat.red{background:var(--danger-soft)}
+.stat b{display:block;font-size:16px;margin-top:2px}
+.stat span{font-size:11px;font-weight:700;color:var(--muted)}
+.lane{margin-top:16px}
+.lane-track{--runner-pos:0%;position:relative;height:30px;border-radius:15px;background:repeating-linear-gradient(90deg,#232120 0 18px,#1A1918 18px 36px);border:1px solid var(--line);overflow:hidden}
+.lane-fill{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,#F4650F,#FF9040);border-radius:15px;transition:width .5s ease}
+.lane-fill.over{background:linear-gradient(90deg,#D62E2E,#E85555)}
 .lane-runner{
-  font-size:15px;
-  margin-right:4px;
-  transform:scaleX(-1);
-}
-
-.lane-meta{
-  display:flex;
-  justify-content:space-between;
-  font-size:12px;
-  color:var(--muted);
-  margin-top:6px;
-  font-weight:600;
-}
-
-.cat-bar .row{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:13px;
-  margin-top:8px;
-}
-
-.cat-bar .nm{
-  width:72px;
-  font-weight:700;
-  flex-shrink:0;
-}
-
-.cat-bar .bar{
-  flex:1;
-  height:8px;
-  background:#262421;
-  border-radius:4px;
-  overflow:hidden;
-}
-
-.cat-bar .bar i{
+  position:absolute;
+  z-index:2;
+  left:clamp(15px,var(--runner-pos),calc(100% - 15px));
+  top:50%;
+  transform:translate(-50%,-50%) scaleX(-1);
   display:block;
-  height:100%;
-  background:var(--green);
-  border-radius:4px;
+  font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;
+  font-size:22px;
+  line-height:1;
+  filter:
+    drop-shadow(0 1px 2px rgba(0,0,0,.9))
+    drop-shadow(0 0 1px rgba(255,255,255,.65));
+  transition:left .5s ease;
+  pointer-events:none;
 }
-
-.cat-bar .amt{
-  font-size:12px;
-  color:var(--muted);
-  width:110px;
-  text-align:right;
-  flex-shrink:0;
-}
+.lane-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-weight:600}
+.cat-bar .row{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:8px}
+.cat-bar .nm{width:72px;font-weight:700;flex-shrink:0}
+.cat-bar .bar{flex:1;height:8px;background:#262421;border-radius:4px;overflow:hidden}
+.cat-bar .bar i{display:block;height:100%;background:var(--green);border-radius:4px}
+.cat-bar .amt{font-size:12px;color:var(--muted);width:110px;text-align:right;flex-shrink:0}
 
 /* 리스트 */
+.item{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:none}
+.item .grow{flex:1;min-width:0}
+.item .t1{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .t2{font-size:12px;color:var(--muted);margin-top:2px}
+.item .amt{font-size:14px;font-weight:800;flex-shrink:0;text-align:right}
+.item .amt .sub{display:block;font-size:10px;font-weight:800;color:var(--amber)}
+.item .amt .sub.ok{color:var(--green)}
+.chip{display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px;background:var(--green-soft);color:var(--green-dark);margin-right:5px;vertical-align:1px}
+.chip.orange{background:var(--track-soft);color:#a04a12}
+.chip.gray{background:#26241F;color:var(--muted)}
+.chip.amber{background:var(--amber-soft);color:var(--amber)}
+.thumb{width:42px;height:42px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex-shrink:0;cursor:pointer;background:#f0f0ee}
+.grp{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;color:var(--muted);padding:14px 2px 5px;border-bottom:1px solid var(--line)}
+.grp:first-child{padding-top:4px}
+.grp .sum{font-variant-numeric:tabular-nums;color:var(--ink)}
+.no-thumb{width:42px;height:42px;border-radius:8px;border:1px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:15px;color:#57534C;flex-shrink:0}
 
-.item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px 2px;
-  border-bottom:1px solid var(--line);
-}
+.ck{width:22px;height:22px;border-radius:7px;border:2px solid #4A463F;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;cursor:pointer;transition:.15s}
+.ck.doing{border-color:var(--amber);background:var(--amber-soft)}
+.ck.done{border-color:#F4650F;background:#F4650F}
+.item.done .t1{text-decoration:line-through;color:var(--muted);font-weight:600}
+.ck-hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
 
-.item:last-child{
-  border-bottom:none;
-}
-
-.item .grow{
-  flex:1;
-  min-width:0;
-}
-
-.item .t1{
-  font-size:14px;
-  font-weight:700;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.item .t2{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:2px;
-}
-
-.item .amt{
-  font-size:14px;
-  font-weight:800;
-  flex-shrink:0;
-  text-align:right;
-}
-
-.item .amt .sub{
-  display:block;
-  font-size:10px;
-  font-weight:800;
-  color:var(--amber);
-}
-
-.item .amt .sub.ok{
-  color:var(--green);
-}
-
-.chip{
-  display:inline-block;
-  font-size:10px;
-  font-weight:800;
-  padding:2px 7px;
-  border-radius:20px;
-  background:var(--green-soft);
-  color:var(--green-dark);
-  margin-right:5px;
-  vertical-align:1px;
-}
-
-.chip.orange{
-  background:var(--track-soft);
-  color:#a04a12;
-}
-
-.chip.gray{
-  background:#26241F;
-  color:var(--muted);
-}
-
-.chip.amber{
-  background:var(--amber-soft);
-  color:var(--amber);
-}
-
-.thumb{
-  width:42px;
-  height:42px;
-  border-radius:8px;
-  object-fit:cover;
-  border:1px solid var(--line);
-  flex-shrink:0;
-  cursor:pointer;
-  background:#f0f0ee;
-}
-
-.grp{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-size:12px;
-  font-weight:800;
-  color:var(--muted);
-  padding:14px 2px 5px;
-  border-bottom:1px solid var(--line);
-}
-
-.grp:first-child{
-  padding-top:4px;
-}
-
-.grp .sum{
-  font-variant-numeric:tabular-nums;
-  color:var(--ink);
-}
-
-.no-thumb{
-  width:42px;
-  height:42px;
-  border-radius:8px;
-  border:1px dashed var(--line);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:15px;
-  color:#57534C;
-  flex-shrink:0;
-}
-
-.ck{
-  width:22px;
-  height:22px;
-  border-radius:7px;
-  border:2px solid #4A463F;
-  flex-shrink:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:13px;
-  color:#fff;
-  cursor:pointer;
-  transition:.15s;
-}
-
-.ck.doing{
-  border-color:var(--amber);
-  background:var(--amber-soft);
-}
-
-.ck.done{
-  border-color:#F4650F;
-  background:#F4650F;
-}
-
-.item.done .t1{
-  text-decoration:line-through;
-  color:var(--muted);
-  font-weight:600;
-}
-
-.ck-hint{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:8px;
-  line-height:1.5;
-}
-
-/* 버튼과 폼 */
-
-.btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  border:none;
-  border-radius:11px;
-  font-family:inherit;
-  font-size:14px;
-  font-weight:700;
-  padding:12px 16px;
-  cursor:pointer;
-  transition:.15s;
-}
-
-.btn:active{
-  transform:scale(.97);
-}
-
-.btn.pri{
-  background:#F4650F;
-  color:#fff;
-  width:100%;
-}
-
-.btn.ghost{
-  background:var(--card);
-  border:1px solid var(--line);
-  color:var(--ink);
-}
-
-.btn.sm{
-  padding:8px 12px;
-  font-size:12px;
-  border-radius:9px;
-}
-
-.btn.danger-txt{
-  background:none;
-  color:var(--danger);
-  padding:8px;
-}
-
-.btn-row{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.btn-row .btn{
-  flex:1;
-}
-
-label.fld{
-  display:block;
-  font-size:12px;
-  font-weight:700;
-  color:var(--muted);
-  margin:12px 0 5px;
-}
-
-input[type=text],
-input[type=number],
-input[type=date],
-select,
-textarea{
-  width:100%;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:11px 12px;
-  font-family:inherit;
-  font-size:15px;
-  background:#232220;
-  color:var(--ink);
-}
-
-input:focus,
-select:focus{
-  outline:2px solid var(--green);
-  outline-offset:-1px;
-}
-
-.fld-row{
-  display:flex;
-  gap:8px;
-}
-
-.fld-row > div{
-  flex:1;
-}
-
-.seg{
-  display:flex;
-  gap:6px;
-  flex-wrap:wrap;
-}
-
-.seg button{
-  border:1px solid var(--line);
-  background:var(--card);
-  border-radius:20px;
-  padding:7px 13px;
-  font-family:inherit;
-  font-size:13px;
-  font-weight:700;
-  color:var(--muted);
-  cursor:pointer;
-}
-
-.seg button.on{
-  background:#F4650F;
-  border-color:#F4650F;
-  color:#fff;
-}
-
-.toggle-row{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin-top:14px;
-  font-size:14px;
-  font-weight:700;
-}
-
-.toggle-row input{
-  width:20px;
-  height:20px;
-  accent-color:var(--green);
-}
+/* 버튼/폼 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:11px;font-family:inherit;font-size:14px;font-weight:700;padding:12px 16px;cursor:pointer;transition:.15s}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:#F4650F;color:#fff;width:100%}
+.btn.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.btn.sm{padding:8px 12px;font-size:12px;border-radius:9px}
+.btn.danger-txt{background:none;color:var(--danger);padding:8px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-row .btn{flex:1}
+label.fld{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:12px 0 5px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-family:inherit;font-size:15px;background:#232220;color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--green);outline-offset:-1px}
+.fld-row{display:flex;gap:8px}
+.fld-row>div{flex:1}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:7px 13px;font-family:inherit;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+.seg button.on{background:#F4650F;border-color:#F4650F;color:#fff}
+.toggle-row{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:14px;font-weight:700}
+.toggle-row input{width:20px;height:20px;accent-color:var(--green)}
 
 /* 모달 */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:50;align-items:flex-end;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:var(--card);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px 26px;max-height:88vh;overflow-y:auto;animation:up .22s ease}
+@keyframes up{from{transform:translateY(40px);opacity:.5}to{transform:none;opacity:1}}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:4px}
+.modal .close-x{position:sticky;float:right;top:0;background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer}
+.photo-view{align-items:center}
+.photo-view .modal{border-radius:16px;margin:16px;text-align:center}
+.photo-view img{max-width:100%;max-height:70vh;border-radius:10px}
+.receipt-drop{border:2px dashed var(--line);border-radius:12px;padding:14px;text-align:center;font-size:13px;color:var(--muted);cursor:pointer;font-weight:600}
+.receipt-drop.has{border-style:solid;border-color:var(--green);color:var(--green-dark);background:var(--green-soft)}
+.receipt-prev{max-width:100%;max-height:160px;border-radius:10px;margin-top:8px;display:none}
 
-.modal-bg{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.62);
-  z-index:50;
-  align-items:flex-end;
-  justify-content:center;
-}
-
-.modal-bg.on{
-  display:flex;
-}
-
-.modal{
-  background:var(--card);
-  width:100%;
-  max-width:560px;
-  border-radius:20px 20px 0 0;
-  padding:20px 18px 26px;
-  max-height:88vh;
-  overflow-y:auto;
-  animation:up .22s ease;
-}
-
-@keyframes up{
-  from{
-    transform:translateY(40px);
-    opacity:.5;
-  }
-
-  to{
-    transform:none;
-    opacity:1;
-  }
-}
-
-.modal h3{
-  font-size:17px;
-  font-weight:800;
-  margin-bottom:4px;
-}
-
-.modal .close-x{
-  position:sticky;
-  float:right;
-  top:0;
-  background:none;
-  border:none;
-  font-size:20px;
-  color:var(--muted);
-  cursor:pointer;
-}
-
-.photo-view{
-  align-items:center;
-}
-
-.photo-view .modal{
-  border-radius:16px;
-  margin:16px;
-  text-align:center;
-}
-
-.photo-view img{
-  max-width:100%;
-  max-height:70vh;
-  border-radius:10px;
-}
-
-.receipt-drop{
-  border:2px dashed var(--line);
-  border-radius:12px;
-  padding:14px;
-  text-align:center;
-  font-size:13px;
-  color:var(--muted);
-  cursor:pointer;
-  font-weight:600;
-}
-
-.receipt-drop.has{
-  border-style:solid;
-  border-color:var(--green);
-  color:var(--green-dark);
-  background:var(--green-soft);
-}
-
-.receipt-prev{
-  max-width:100%;
-  max-height:160px;
-  border-radius:10px;
-  margin-top:8px;
-  display:none;
-}
+/* 팁 색상 선택 팔레트 */
+.color-picker-modal .modal{padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+.color-picker-title{margin-bottom:4px}
+.color-picker-sub{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:16px}
+.color-picker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.color-choice{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:16px;background:#232220;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.color-choice:active{transform:scale(.96)}
+.color-choice .swatch{width:48px;height:48px;border-radius:50%;border:3px solid rgba(255,255,255,.16);box-shadow:0 0 0 1px rgba(0,0,0,.28)}
+.color-choice .check{display:none;position:absolute;right:8px;top:8px;width:22px;height:22px;border-radius:50%;background:#fff;color:#111;font-size:14px;font-weight:900;align-items:center;justify-content:center}
+.color-choice.on{outline:2px solid var(--green);outline-offset:2px}
+.color-choice.on .check{display:flex}
 
 /* 테이블 */
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-th{
-  font-size:11px;
-  font-weight:800;
-  color:var(--muted);
-  text-align:left;
-  padding:8px 6px;
-  border-bottom:2px solid var(--line);
-}
-
-td{
-  padding:9px 6px;
-  border-bottom:1px solid var(--line);
-}
-
-td.num,
-th.num{
-  text-align:right;
-  font-variant-numeric:tabular-nums;
-}
-
-tr.total td{
-  font-weight:800;
-  border-top:2px solid #55504A;
-  border-bottom:none;
-}
-
-.diff-plus{
-  color:#57C27D;
-  font-weight:700;
-}
-
-.diff-minus{
-  color:var(--danger);
-  font-weight:700;
-}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;font-weight:800;color:var(--muted);text-align:left;padding:8px 6px;border-bottom:2px solid var(--line)}
+td{padding:9px 6px;border-bottom:1px solid var(--line)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.total td{font-weight:800;border-top:2px solid #55504A;border-bottom:none}
+.diff-plus{color:#57C27D;font-weight:700}
+.diff-minus{color:var(--danger);font-weight:700}
 
 /* 환급 카드 */
+.pay-row{display:flex;align-items:center;gap:10px;padding:11px 2px;border-bottom:1px solid var(--line)}
+.pay-row:last-child{border-bottom:none}
+.pay-row .who{font-size:14px;font-weight:800;flex:1}
+.pay-row .due{font-size:14px;font-weight:800;color:var(--amber)}
+.pay-row .due.zero{color:#57C27D}
 
-.pay-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:11px 2px;
-  border-bottom:1px solid var(--line);
-}
+/* 셋업 오버레이 */
+#setupOverlay{position:fixed;inset:0;background:var(--bg);z-index:99;display:none;align-items:center;justify-content:center;padding:24px}
+#setupOverlay.on{display:flex}
+#setupOverlay .box{max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;font-size:14px;line-height:1.7}
+#setupOverlay code{background:#2A2825;border-radius:4px;padding:1px 5px;font-size:12px}
 
-.pay-row:last-child{
-  border-bottom:none;
-}
-
-.pay-row .who{
-  font-size:14px;
-  font-weight:800;
-  flex:1;
-}
-
-.pay-row .due{
-  font-size:14px;
-  font-weight:800;
-  color:var(--amber);
-}
-
-.pay-row .due.zero{
-  color:#57C27D;
-}
-
-/* 설정 안내 */
-
-#setupOverlay{
-  position:fixed;
-  inset:0;
-  background:var(--bg);
-  z-index:99;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-
-#setupOverlay.on{
-  display:flex;
-}
-
-#setupOverlay .box{
-  max-width:400px;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:24px;
-  font-size:14px;
-  line-height:1.7;
-}
-
-#setupOverlay code{
-  background:#2A2825;
-  border-radius:4px;
-  padding:1px 5px;
-  font-size:12px;
-}
-
-nav{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:560px;
-  background:var(--card);
-  border-top:1px solid var(--line);
-  display:flex;
-  z-index:40;
-  padding-bottom:env(safe-area-inset-bottom);
-}
-
-nav button{
-  flex:1;
-  background:none;
-  border:none;
-  font-family:inherit;
-  padding:9px 0 8px;
-  cursor:pointer;
-  color:#6E6961;
-  font-size:10px;
-  font-weight:700;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
-}
-
-nav button .ico{
-  width:20px;
-  height:20px;
-}
-
-nav button.on{
-  color:var(--green);
-}
-
-.toast{
-  position:fixed;
-  bottom:96px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#F2EFEA;
-  color:#161513;
-  font-size:13px;
-  font-weight:600;
-  padding:10px 18px;
-  border-radius:24px;
-  z-index:60;
-  opacity:0;
-  transition:.25s;
-  pointer-events:none;
-  white-space:nowrap;
-}
-
-.toast.on{
-  opacity:1;
-}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:40;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:none;font-family:inherit;padding:9px 0 8px;cursor:pointer;color:#6E6961;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button .ico{width:20px;height:20px}
+nav button.on{color:var(--green)}
+.toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#F2EFEA;color:#161513;font-size:13px;font-weight:600;padding:10px 18px;border-radius:24px;z-index:60;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
 
 @media print{
-  html{
-    color-scheme:light;
-
-    --bg:#fff;
-    --card:#fff;
-    --line:#DDD8D2;
-    --ink:#161513;
-    --muted:#6E6961;
-
-    --green:#C4520A;
-    --green-dark:#8A3A07;
-    --green-soft:#FDEADD;
-    --black-soft:#F1EFEA;
-
-    --danger:#C43E2F;
-    --danger-soft:#FBE7E4;
-
-    --amber:#B7791F;
-    --amber-soft:#FBF0DA;
-
-    --track:#D62E2E;
-    --track-soft:#FBE4E1;
-  }
-
-  body{
-    padding:0;
-    background:#fff;
-    max-width:none;
-  }
-
-  header .sync,
-  nav,
-  .no-print,
-  .btn{
-    display:none !important;
-  }
-
-  .tab{
-    display:none !important;
-  }
-
-  #tab-settle{
-    display:block !important;
-  }
-
-  .card{
-    border:none;
-    padding:8px 0;
-    page-break-inside:avoid;
-  }
-
-  .print-title{
-    display:block !important;
-    font-size:20px;
-    font-weight:800;
-    margin:10px 0 16px;
-    text-align:center;
-  }
+  html{color-scheme:light;--bg:#fff;--card:#fff;--line:#DDD8D2;--ink:#161513;--muted:#6E6961;
+    --green:#C4520A;--green-dark:#8A3A07;--green-soft:#FDEADD;--black-soft:#F1EFEA;
+    --danger:#C43E2F;--danger-soft:#FBE7E4;--amber:#B7791F;--amber-soft:#FBF0DA;--track:#D62E2E;--track-soft:#FBE4E1}
+  body{padding:0;background:#fff;max-width:none}
+  header .sync,nav,.no-print,.btn{display:none!important}
+  .tab{display:none!important}
+  #tab-settle{display:block!important}
+  .card{border:none;padding:8px 0;page-break-inside:avoid}
+  .print-title{display:block!important;font-size:20px;font-weight:800;margin:10px 0 16px;text-align:center}
 }
-
-.print-title{
-  display:none;
-}
+.print-title{display:none}
 </style>
 </head>
-
 <body>
 
 <div id="setupOverlay">
   <div class="box">
-    <b style="font-size:16px">⚙️ Firebase 연결이 필요합니다</b>
-    <br><br>
-
-    이 파일을 텍스트 편집기로 열어
-    <code>firebaseConfig</code>
-    부분에 Firebase 콘솔의 프로젝트 설정 값을 붙여넣어주세요.
-
-    <br><br>
-
-    <span style="color:var(--muted);font-size:13px">
-      Firebase 콘솔 → 프로젝트 설정 → 일반 → 내 앱
-      → SDK 설정 및 구성 → 구성 선택 후 복사
-    </span>
+    <b style="font-size:16px">⚙️ Firebase 연결이 필요합니다</b><br><br>
+    이 파일을 텍스트 편집기로 열어 <code>firebaseConfig</code> 부분에
+    Firebase 콘솔의 프로젝트 설정 값을 붙여넣어주세요.<br><br>
+    <span style="color:var(--muted);font-size:13px">Firebase 콘솔 → 프로젝트 설정 → 일반 → 내 앱 → SDK 설정 및 구성 → "구성" 선택 후 복사</span>
   </div>
 </div>
 
 <header>
-  <div class="hd-label" id="hdLabel">
-    POD CHURCH ACCOUNTING PROGRAM
-  </div>
-
-  <div class="hd-title" id="hdTitle">
-    POD CHURCH ACCOUNTING
-
-    <button
-      onclick="openMetaModal()"
-      style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px"
-      title="제목 편집"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        width="14"
-        height="14"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-      </svg>
-    </button>
-  </div>
-
-  <div class="hd-sub" id="hdSub">
-    POD CHURCH ACCOUNTING
-  </div>
-
-  <div class="sync" id="syncBadge">
-    연결 중…
-  </div>
+  <div class="hd-label" id="hdLabel">POD CHURCH ACCOUNTING PROGRAM</div>
+  <div class="hd-title" id="hdTitle">POD CHURCH ACCOUNTING<button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button></div>
+  <div class="hd-sub" id="hdSub">POD CHURCH ACCOUNTING</div>
+  <div class="sync" id="syncBadge">연결 중…</div>
 </header>
 
 <main>
 
+<!-- ═══ 홈 ═══ -->
 <section class="tab on" id="tab-home">
   <div class="card">
-    <div class="sec-title">
-      예산 현황
-
-      <small
-        id="myNameTag"
-        onclick="askMyName()"
-        style="cursor:pointer"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          width="13"
-          height="13"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          style="vertical-align:-2px;margin-right:3px"
-        >
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/>
-        </svg>
-
-        이름 설정
-      </small>
-    </div>
-
-    <div class="big-num" id="dashRemain">
-      0
-      <small>원 남음</small>
-    </div>
-
+    <div class="sec-title">예산 현황 <small id="myNameTag" onclick="askMyName()" style="cursor:pointer"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>이름 설정</small></div>
+    <div class="big-num" id="dashRemain">0<small>원 남음</small></div>
     <div class="lane">
-      <div class="lane-track">
-        <div class="lane-fill" id="laneFill">
-          <span class="lane-runner">🏃</span>
-        </div>
+      <div class="lane-track" id="laneTrack">
+        <div class="lane-fill" id="laneFill"></div>
+        <span class="lane-runner" id="laneRunner" aria-hidden="true">🏃</span>
       </div>
-
-      <div class="lane-meta">
-        <span id="laneSpent">지출 0원</span>
-        <span id="lanePct">0%</span>
-        <span id="laneBudget">예산 0원</span>
-      </div>
+      <div class="lane-meta"><span id="laneSpent">지출 0원</span><span id="lanePct">0%</span><span id="laneBudget">예산 0원</span></div>
     </div>
-
     <div class="stat-row">
-      <div class="stat">
-        <span>총 예산</span>
-        <b id="stBudget">0원</b>
-      </div>
-
-      <div class="stat orange">
-        <span>총 지출</span>
-        <b id="stSpent">0원</b>
-      </div>
-
-      <div class="stat" id="stRemainBox">
-        <span>잔액</span>
-        <b id="stRemain">0원</b>
-      </div>
+      <div class="stat"><span>총 예산</span><b id="stBudget">0원</b></div>
+      <div class="stat orange"><span>총 지출</span><b id="stSpent">0원</b></div>
+      <div class="stat" id="stRemainBox"><span>잔액</span><b id="stRemain">0원</b></div>
     </div>
-
     <div class="cat-bar" id="catBars"></div>
   </div>
 
   <div class="card">
-    <div class="sec-title">
-      준비 진행
-      <small id="ckSummary">0 / 0 완료</small>
-    </div>
-
-    <div
-      class="lane-track"
-      style="height:10px;border-radius:5px"
-    >
-      <div
-        class="lane-fill"
-        id="ckFill"
-        style="border-radius:5px"
-      ></div>
-    </div>
-
-    <div
-      id="homeCkPreview"
-      style="margin-top:6px"
-    ></div>
+    <div class="sec-title">준비 진행 <small id="ckSummary">0 / 0 완료</small></div>
+    <div class="lane-track" style="height:10px;border-radius:5px"><div class="lane-fill" id="ckFill" style="border-radius:5px"></div></div>
+    <div id="homeCkPreview" style="margin-top:6px"></div>
   </div>
 
   <div class="card">
-    <div class="sec-title">
-      최근 지출
-    </div>
-
+    <div class="sec-title">최근 지출</div>
     <div id="homeExpPreview"></div>
   </div>
 </section>
 
+<!-- ═══ 준비 ═══ -->
 <section class="tab" id="tab-check">
   <div class="card no-print">
-    <button
-      class="btn pri"
-      onclick="openCkModal()"
-    >
-      ＋ 준비 항목 추가
-    </button>
-
-    <div class="ck-hint">
-      체크박스를 누를 때마다
-      <b>대기 → 진행중 → 완료</b>
-      순으로 바뀝니다. 변경 사항은 팀 전체 화면에 실시간 반영됩니다.
-    </div>
+    <button class="btn pri" onclick="openCkModal()">＋ 준비 항목 추가</button>
+    <div class="ck-hint">체크박스를 누를 때마다 <b>대기 → 진행중 → 완료</b> 순으로 바뀝니다. 변경 사항은 팀 전체 화면에 실시간 반영됩니다.</div>
   </div>
-
   <div class="card">
-    <div
-      class="seg"
-      id="ckFilter"
-      style="margin-bottom:8px"
-    ></div>
-
+    <div class="seg" id="ckFilter" style="margin-bottom:8px"></div>
     <div id="ckList"></div>
   </div>
 </section>
 
+<!-- ═══ 지출 ═══ -->
 <section class="tab" id="tab-money">
   <div class="card">
-    <div class="sec-title">
-      예산안
-      <small id="budgetTotal">합계 0원</small>
-    </div>
-
+    <div class="sec-title">예산안 <small id="budgetTotal">합계 0원</small></div>
     <div id="budgetList"></div>
-
-    <button
-      class="btn ghost sm"
-      style="width:100%;margin-top:10px"
-      onclick="openBgModal()"
-    >
-      ＋ 예산 항목 추가
-    </button>
+    <button class="btn ghost sm" style="width:100%;margin-top:10px" onclick="openBgModal()">＋ 예산 항목 추가</button>
   </div>
-
   <div class="card">
-    <div class="sec-title">
-      지출 내역
-      <small id="expTotal">합계 0원</small>
+    <div class="sec-title">지출 내역 <small id="expTotal">합계 0원</small></div>
+    <button class="btn pri no-print" style="margin-bottom:10px" onclick="openExpModal()">＋ 지출 기록 (영수증 촬영)</button>
+    <div class="seg no-print" id="expSortSeg" style="margin-bottom:4px">
+      <button class="on" data-s="date">날짜별</button>
+      <button data-s="cat">분류별</button>
     </div>
-
-    <button
-      class="btn pri no-print"
-      style="margin-bottom:10px"
-      onclick="openExpModal()"
-    >
-      ＋ 지출 기록 (영수증 촬영)
-    </button>
-
-    <div
-      class="seg no-print"
-      id="expSortSeg"
-      style="margin-bottom:4px"
-    >
-      <button class="on" data-s="date">
-        날짜별
-      </button>
-
-      <button data-s="cat">
-        분류별
-      </button>
-    </div>
-
     <div id="expList"></div>
   </div>
 </section>
 
+<!-- ═══ 정산 ═══ -->
 <section class="tab" id="tab-settle">
-  <div class="print-title" id="printTitle">
-    정산서
-  </div>
-
+  <div class="print-title" id="printTitle">정산서</div>
   <div class="card">
-    <div class="sec-title">
-      예산 대비 정산
-    </div>
-
+    <div class="sec-title">예산 대비 정산</div>
     <table id="settleTable"></table>
   </div>
-
   <div class="card">
-    <div class="sec-title">
-      환급 현황
-      <small>개인 결제분</small>
-    </div>
-
+    <div class="sec-title">환급 현황 <small>개인 결제분</small></div>
     <div id="payoutList"></div>
-
-    <div class="ck-hint">
-      결제수단이
-      <b>개인카드/개인현금</b>인 지출이 결제자별로 집계됩니다.
-      환급을 마쳤으면 해당 지출을 열어 환급 완료를 체크하세요.
-    </div>
+    <div class="ck-hint">결제수단이 <b>개인카드/개인현금</b>인 지출이 결제자별로 집계됩니다. 환급을 마쳤으면 해당 지출을 열어 "환급 완료"를 체크하세요.</div>
   </div>
-
   <div class="card no-print">
-    <div class="sec-title">
-      내보내기
-    </div>
-
+    <div class="sec-title">내보내기</div>
     <div class="btn-row">
-      <button
-        class="btn ghost"
-        onclick="exportCSV('expense')"
-      >
-        지출내역 엑셀(CSV)
-      </button>
-
-      <button
-        class="btn ghost"
-        onclick="exportCSV('settle')"
-      >
-        정산표 엑셀(CSV)
-      </button>
+      <button class="btn ghost" onclick="exportCSV('expense')">지출내역 엑셀(CSV)</button>
+      <button class="btn ghost" onclick="exportCSV('settle')">정산표 엑셀(CSV)</button>
     </div>
-
-    <div
-      class="btn-row"
-      style="margin-top:8px"
-    >
-      <button
-        class="btn ghost"
-        onclick="window.print()"
-      >
-        정산서 인쇄/PDF
-      </button>
-
-      <button
-        class="btn ghost"
-        onclick="exportReceipts()"
-      >
-        영수증 사진 저장
-      </button>
+    <div class="btn-row" style="margin-top:8px">
+      <button class="btn ghost" onclick="window.print()">정산서 인쇄/PDF</button>
+      <button class="btn ghost" onclick="exportReceipts()">영수증 사진 저장</button>
     </div>
-
-    <div class="ck-hint">
-      데이터는 Firebase에 저장되어 모든 팀원이 같은 내용을 봅니다.
-      CSV는 엑셀에서 바로 열립니다.
-    </div>
+    <div class="ck-hint">데이터는 Firebase에 저장되어 모든 팀원이 같은 내용을 봅니다. CSV는 엑셀에서 바로 열립니다.</div>
   </div>
 </section>
 
 </main>
 
 <nav>
-  <button class="on" data-tab="home">
-    <svg
-      class="ico"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path d="M3 10.5 12 3l9 7.5"/>
-      <path d="M5 9.5V21h14V9.5"/>
-      <path d="M10 21v-5.5h4V21"/>
-    </svg>
-
-    홈
-  </button>
-
-  <button data-tab="check">
-    <svg
-      class="ico"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path d="M10.5 6H21M10.5 12H21M10.5 18H21"/>
-      <path d="m3 5.5 1.6 1.6L7.5 4"/>
-      <path d="m3 11.5 1.6 1.6L7.5 10"/>
-      <path d="m3 17.5 1.6 1.6L7.5 16"/>
-    </svg>
-
-    준비
-  </button>
-
-  <button data-tab="money">
-    <svg
-      class="ico"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path d="M20 7H6a2.5 2.5 0 0 1 0-5h12v5"/>
-      <path d="M3.5 4.5V19a2 2 0 0 0 2 2H21V9"/>
-      <path d="M17 13.5a1.5 1.5 0 1 0 .01 3.01A1.5 1.5 0 0 0 17 13.5Z"/>
-    </svg>
-
-    지출
-  </button>
-
-  <button data-tab="settle">
-    <svg
-      class="ico"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/>
-      <path d="M14 2v6h6"/>
-      <path d="M8 13h8M8 17h5"/>
-    </svg>
-
-    정산
-  </button>
+  <button class="on" data-tab="home"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-5.5h4V21"/></svg>홈</button>
+  <button data-tab="check"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6H21M10.5 12H21M10.5 18H21"/><path d="m3 5.5 1.6 1.6L7.5 4"/><path d="m3 11.5 1.6 1.6L7.5 10"/><path d="m3 17.5 1.6 1.6L7.5 16"/></svg>준비</button>
+  <button data-tab="money"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7H6a2.5 2.5 0 0 1 0-5h12v5"/><path d="M3.5 4.5V19a2 2 0 0 0 2 2H21V9"/><path d="M17 13.5a1.5 1.5 0 1 0 .01 3.01A1.5 1.5 0 0 0 17 13.5Z"/></svg>지출</button>
+  <button data-tab="settle"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>정산</button>
 </nav>
 
+<!-- 모달: 지출 -->
 <div class="modal-bg" id="expModal">
   <div class="modal">
-    <button
-      class="close-x"
-      onclick="closeModal('expModal')"
-    >
-      ✕
-    </button>
-
-    <h3 id="expModalTitle">
-      지출 기록
-    </h3>
-
+    <button class="close-x" onclick="closeModal('expModal')">✕</button>
+    <h3 id="expModalTitle">지출 기록</h3>
     <label class="fld">날짜</label>
     <input type="date" id="expDate">
-
-    <label class="fld">
-      분류
-
-      <a
-        href="javascript:openCatModal()"
-        style="float:right;color:var(--green);font-weight:700"
-      >
-        편집
-      </a>
-    </label>
-
+    <label class="fld">분류 <a href="javascript:openCatModal()" style="float:right;color:var(--green);font-weight:700">편집</a></label>
     <div class="seg" id="expCatSeg"></div>
-
     <label class="fld">내용</label>
-
-    <input
-      type="text"
-      id="expDesc"
-      placeholder="예: 구입 항목"
-    >
-
+    <input type="text" id="expDesc" placeholder="예: 릴레이 배턴 4개 구입">
     <div class="fld-row">
-      <div>
-        <label class="fld">금액 (원)</label>
-
-        <input
-          type="number"
-          id="expAmt"
-          inputmode="numeric"
-          placeholder="35000"
-        >
-      </div>
-
-      <div>
-        <label class="fld">결제수단</label>
-
-        <select
-          id="expMethod"
-          onchange="onMethodChange()"
-        >
-          <option value="개인카드">
-            개인카드 (환급 필요)
-          </option>
-
-          <option value="개인현금">
-            개인현금 (환급 필요)
-          </option>
-
-          <option value="교회카드">
-            교회카드
-          </option>
-
-          <option value="계좌이체">
-            계좌이체 (공금)
-          </option>
+      <div><label class="fld">금액 (원)</label><input type="number" id="expAmt" inputmode="numeric" placeholder="35000"></div>
+      <div><label class="fld">결제수단</label>
+        <select id="expMethod" onchange="onMethodChange()">
+          <option value="개인카드">개인카드 (환급 필요)</option>
+          <option value="개인현금">개인현금 (환급 필요)</option>
+          <option value="교회카드">교회카드</option>
+          <option value="계좌이체">계좌이체 (공금)</option>
         </select>
       </div>
     </div>
-
     <label class="fld">결제자</label>
-
-    <input
-      type="text"
-      id="expPayer"
-      placeholder="이름"
-    >
-
-    <div
-      class="toggle-row"
-      id="reimburseRow"
-      style="display:none"
-    >
-      <input
-        type="checkbox"
-        id="expReimbursed"
-      >
-
-      <label for="expReimbursed">
-        환급 완료
-      </label>
+    <input type="text" id="expPayer" placeholder="이름">
+    <div class="toggle-row" id="reimburseRow" style="display:none">
+      <input type="checkbox" id="expReimbursed"><label for="expReimbursed">환급 완료</label>
     </div>
-
     <label class="fld">영수증 사진</label>
-
-    <div
-      class="receipt-drop"
-      id="receiptDrop"
-      onclick="document.getElementById('receiptInput').click()"
-    >
-      촬영 또는 사진 선택
+    <div class="receipt-drop" id="receiptDrop" onclick="document.getElementById('receiptInput').click()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><path d="M4 7h3l2-2.5h6L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg>촬영 또는 사진 선택</div>
+    <input type="file" id="receiptInput" accept="image/*" capture="environment" style="display:none" onchange="onReceiptPick(this)">
+    <img class="receipt-prev" id="receiptPrev" alt="영수증 미리보기">
+    <div style="margin-top:16px" class="btn-row">
+      <button class="btn pri" id="expSaveBtn" onclick="saveExpense()">저장</button>
     </div>
-
-    <input
-      type="file"
-      id="receiptInput"
-      accept="image/*"
-      capture="environment"
-      style="display:none"
-      onchange="onReceiptPick(this)"
-    >
-
-    <img
-      class="receipt-prev"
-      id="receiptPrev"
-      alt="영수증 미리보기"
-    >
-
-    <div
-      style="margin-top:16px"
-      class="btn-row"
-    >
-      <button
-        class="btn pri"
-        id="expSaveBtn"
-        onclick="saveExpense()"
-      >
-        저장
-      </button>
-    </div>
-
-    <button
-      class="btn danger-txt"
-      id="expDeleteBtn"
-      style="width:100%;display:none"
-      onclick="deleteExpense()"
-    >
-      이 지출 삭제
-    </button>
+    <button class="btn danger-txt" id="expDeleteBtn" style="width:100%;display:none" onclick="deleteExpense()">이 지출 삭제</button>
   </div>
 </div>
 
+<!-- 모달: 예산 -->
 <div class="modal-bg" id="bgModal">
   <div class="modal">
-    <button
-      class="close-x"
-      onclick="closeModal('bgModal')"
-    >
-      ✕
-    </button>
-
-    <h3 id="bgModalTitle">
-      예산 항목
-    </h3>
-
-    <label class="fld">
-      분류
-
-      <a
-        href="javascript:openCatModal()"
-        style="float:right;color:var(--green);font-weight:700"
-      >
-        편집
-      </a>
-    </label>
-
+    <button class="close-x" onclick="closeModal('bgModal')">✕</button>
+    <h3 id="bgModalTitle">예산 항목</h3>
+    <label class="fld">분류 <a href="javascript:openCatModal()" style="float:right;color:var(--green);font-weight:700">편집</a></label>
     <div class="seg" id="bgCatSeg"></div>
-
     <label class="fld">항목명</label>
-
-    <input
-      type="text"
-      id="bgName"
-      placeholder="예: 구입 또는 대여"
-    >
-
+    <input type="text" id="bgName" placeholder="예: 경기용품 구입/대여">
     <label class="fld">계획 금액 (원)</label>
-
-    <input
-      type="number"
-      id="bgAmt"
-      inputmode="numeric"
-      placeholder="300000"
-    >
-
-    <div
-      style="margin-top:16px"
-      class="btn-row"
-    >
-      <button
-        class="btn pri"
-        onclick="saveBudget()"
-      >
-        저장
-      </button>
+    <input type="number" id="bgAmt" inputmode="numeric" placeholder="300000">
+    <div style="margin-top:16px" class="btn-row">
+      <button class="btn pri" onclick="saveBudget()">저장</button>
     </div>
-
-    <button
-      class="btn danger-txt"
-      id="bgDeleteBtn"
-      style="width:100%;display:none"
-      onclick="deleteBudget()"
-    >
-      이 항목 삭제
-    </button>
+    <button class="btn danger-txt" id="bgDeleteBtn" style="width:100%;display:none" onclick="deleteBudget()">이 항목 삭제</button>
   </div>
 </div>
 
+<!-- 모달: 체크리스트 -->
 <div class="modal-bg" id="ckModal">
   <div class="modal">
-    <button
-      class="close-x"
-      onclick="closeModal('ckModal')"
-    >
-      ✕
-    </button>
-
-    <h3 id="ckModalTitle">
-      준비 항목
-    </h3>
-
-    <label class="fld">
-      분류
-
-      <a
-        href="javascript:openCatModal()"
-        style="float:right;color:var(--green);font-weight:700"
-      >
-        편집
-      </a>
-    </label>
-
+    <button class="close-x" onclick="closeModal('ckModal')">✕</button>
+    <h3 id="ckModalTitle">준비 항목</h3>
+    <label class="fld">분류 <a href="javascript:openCatModal()" style="float:right;color:var(--green);font-weight:700">편집</a></label>
     <div class="seg" id="ckCatSeg"></div>
-
     <label class="fld">항목</label>
-
-    <input
-      type="text"
-      id="ckName"
-      placeholder="예: 준비 항목 입력"
-    >
-
+    <input type="text" id="ckName" placeholder="예: 푸드트럭 업체 계약금 입금">
     <div class="fld-row">
-      <div>
-        <label class="fld">담당자</label>
-
-        <input
-          type="text"
-          id="ckOwner"
-          placeholder="이름"
-        >
-      </div>
-
-      <div>
-        <label class="fld">기한</label>
-
-        <input
-          type="date"
-          id="ckDue"
-        >
-      </div>
+      <div><label class="fld">담당자</label><input type="text" id="ckOwner" placeholder="이름"></div>
+      <div><label class="fld">기한</label><input type="date" id="ckDue"></div>
     </div>
-
     <label class="fld">메모</label>
-
-    <input
-      type="text"
-      id="ckNote"
-      placeholder="메모"
-    >
-
-    <div
-      style="margin-top:16px"
-      class="btn-row"
-    >
-      <button
-        class="btn pri"
-        onclick="saveCk()"
-      >
-        저장
-      </button>
+    <input type="text" id="ckNote" placeholder="예: 세금계산서 발행 요청 필요">
+    <div style="margin-top:16px" class="btn-row">
+      <button class="btn pri" onclick="saveCk()">저장</button>
     </div>
-
-    <button
-      class="btn danger-txt"
-      id="ckDeleteBtn"
-      style="width:100%;display:none"
-      onclick="deleteCk()"
-    >
-      이 항목 삭제
-    </button>
+    <button class="btn danger-txt" id="ckDeleteBtn" style="width:100%;display:none" onclick="deleteCk()">이 항목 삭제</button>
   </div>
 </div>
 
+<!-- 모달: 제목 편집 -->
 <div class="modal-bg" id="metaModal">
   <div class="modal">
-    <button
-      class="close-x"
-      onclick="closeModal('metaModal')"
-    >
-      ✕
-    </button>
-
+    <button class="close-x" onclick="closeModal('metaModal')">✕</button>
     <h3>제목 편집</h3>
-
-    <div
-      class="ck-hint"
-      style="margin:4px 0 0"
-    >
-      변경하면 팀 전체 화면과 정산서 인쇄 제목에도 반영됩니다.
-    </div>
-
-    <label class="fld">
-      상단 라벨
-    </label>
-
-    <input
-      type="text"
-      id="metaLabel"
-      placeholder="예: POD CHURCH"
-    >
-
-    <label class="fld">
-      제목
-    </label>
-
-    <input
-      type="text"
-      id="metaTitle"
-      placeholder="예: 2026 Program"
-    >
-
-    <label class="fld">
-      부제목
-    </label>
-
-    <input
-      type="text"
-      id="metaSub"
-      placeholder="예: 프로그램팀 회계"
-    >
-
-    <div
-      style="margin-top:16px"
-      class="btn-row"
-    >
-      <button
-        class="btn pri"
-        onclick="saveMeta()"
-      >
-        저장
-      </button>
+    <div class="ck-hint" style="margin:4px 0 0">변경하면 팀 전체 화면과 정산서 인쇄 제목에도 반영됩니다.</div>
+    <label class="fld">상단 라벨 (작은 초록 글씨)</label>
+    <input type="text" id="metaLabel" placeholder="예: Pod Church · Program Finance">
+    <label class="fld">제목</label>
+    <input type="text" id="metaTitle" placeholder="예: 운동회 & 푸드트럭">
+    <label class="fld">부제목 (회색 글씨)</label>
+    <input type="text" id="metaSub" placeholder="예: 2026.10.04 (토) · 프로그램팀 회계">
+    <div style="margin-top:16px" class="btn-row">
+      <button class="btn pri" onclick="saveMeta()">저장</button>
     </div>
   </div>
 </div>
 
+<!-- 모달: 분류 관리 -->
 <div class="modal-bg" id="catModal">
   <div class="modal">
-    <button
-      class="close-x"
-      onclick="closeModal('catModal')"
-    >
-      ✕
-    </button>
-
+    <button class="close-x" onclick="closeModal('catModal')">✕</button>
     <h3>분류 관리</h3>
-
-    <div
-      class="ck-hint"
-      style="margin:4px 0 10px"
-    >
-      이름을 바꾸면 해당 분류를 쓰던 지출·예산·준비 항목도 함께 바뀝니다.
-      색상 원을 누르면 8가지 색이 차례로 바뀝니다.
-    </div>
-
+    <div class="ck-hint" style="margin:4px 0 10px">이름을 바꾸면 해당 분류를 쓰던 지출·예산·준비 항목도 함께 바뀝니다. <b>색상 원을 누른 뒤</b> 팔레트에서 원하는 색을 선택하세요. 변경은 팀 전체에 실시간 반영됩니다.</div>
     <div id="catList"></div>
-
-    <div
-      class="fld-row"
-      style="margin-top:12px"
-    >
-      <div style="flex:2">
-        <input
-          type="text"
-          id="newCatName"
-          placeholder="새 분류 이름"
-        >
-      </div>
-
-      <div style="flex:1">
-        <button
-          class="btn ghost"
-          style="width:100%"
-          onclick="addCat()"
-        >
-          추가
-        </button>
-      </div>
+    <div class="fld-row" style="margin-top:12px">
+      <div style="flex:2"><input type="text" id="newCatName" placeholder="새 분류 이름 (예: 간식)"></div>
+      <div style="flex:1"><button class="btn ghost" style="width:100%" onclick="addCat()">추가</button></div>
     </div>
   </div>
 </div>
 
-<div
-  class="modal-bg photo-view"
-  id="photoModal"
-  onclick="closeModal('photoModal')"
->
+<!-- 모달: 팁 색상 선택 -->
+<div class="modal-bg color-picker-modal" id="colorModal">
   <div class="modal">
-    <img id="photoBig" alt="영수증">
+    <button class="close-x" onclick="closeModal('colorModal')">✕</button>
+    <h3 class="color-picker-title">팁 색상 선택</h3>
+    <div class="color-picker-sub" id="colorPickerSub">원하는 색상을 선택하세요.</div>
+    <div class="color-picker-grid" id="colorPickerGrid"></div>
   </div>
+</div>
+
+<div class="modal-bg photo-view" id="photoModal" onclick="closeModal('photoModal')">
+  <div class="modal"><img id="photoBig" alt="영수증"></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script type="module">
-const firebaseConfig={
-  apiKey:"AIzaSyApakLSEv2qZP3x4BK1gE0VLCjLY5PZ5O0",
-  authDomain:"pod-church.firebaseapp.com",
-  projectId:"pod-church",
-  storageBucket:"pod-church.firebasestorage.app",
-  messagingSenderId:"546886233510",
-  appId:"1:546886233510:web:6c902af76170dbf8fbf367"
+/* ═════════════════════════════════════════════════
+   1) 여기에 Firebase 구성 붙여넣기
+   Firebase 콘솔 → ⚙️ 프로젝트 설정 → 일반 → 내 앱
+   → SDK 설정 및 구성 → "구성" 선택 → 복사해서 교체
+═════════════════════════════════════════════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyApakLSEv2qZP3x4BK1gE0VLCjLY5PZ5O0",
+  authDomain: "pod-church.firebaseapp.com",
+  projectId: "pod-church",
+  storageBucket: "pod-church.firebasestorage.app",
+  messagingSenderId: "546886233510",
+  appId: "1:546886233510:web:6c902af76170dbf8fbf367"
 };
+/* ═════════════════════════════════════════════════ */
 
-import{
-  initializeApp
-}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import{
-  getFirestore,
-  collection,
-  doc,
-  setDoc,
-  deleteDoc,
-  onSnapshot
-}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-import{
-  getAuth,
-  signInAnonymously
-}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-const BROWSER_TITLE=
-  'POD CHURCH ACCOUNTING PROGRAM | POD CHURCH 회계 프로그램';
-
-const EVENT='event2026';
-
-const DEFAULT_CATS=[
-  'CATEGORY1',
-  'CATEGORY2',
-  'CATEGORY3'
-];
-
+const EVENT='event2026';   // 행사 구분 키 (다음 행사 땐 이 값만 바꾸면 새 장부가 됩니다)
+const DEFAULT_CATS=['Category1','Category2','Category3'];
 const CHIP_PAL=[
-  {bg:'#3A2415',fg:'#FF9A57'},
-  {bg:'#2C2A27',fg:'#CFC9C0'},
-  {bg:'#26241F',fg:'#A29B90'},
-  {bg:'#332A16',fg:'#E0A94F'},
-  {bg:'#1B2836',fg:'#7FB1E8'},
-  {bg:'#2C2133',fg:'#C79BE0'},
-  {bg:'#361D1A',fg:'#F08A7C'},
-  {bg:'#15302E',fg:'#6BC9C0'}
+  {bg:'#3A2415',fg:'#FF9A57'},{bg:'#2C2A27',fg:'#CFC9C0'},
+  {bg:'#26241F',fg:'#A29B90'},{bg:'#332A16',fg:'#E0A94F'},
+  {bg:'#1B2836',fg:'#7FB1E8'},{bg:'#2C2133',fg:'#C79BE0'},
+  {bg:'#361D1A',fg:'#F08A7C'},{bg:'#15302E',fg:'#6BC9C0'}
 ];
-
 function chipIdx(cat){
-  if(S.catColors[cat]!==undefined){
-    return S.catColors[cat]%CHIP_PAL.length;
-  }
-
-  return Math.max(
-    0,
-    allCats().indexOf(cat)
-  )%CHIP_PAL.length;
+  if(S.catColors[cat]!==undefined) return S.catColors[cat]%CHIP_PAL.length;
+  return Math.max(0,allCats().indexOf(cat))%CHIP_PAL.length;
 }
-
 function chip(cat){
   const p=CHIP_PAL[chipIdx(cat)];
-
-  return `
-    <span
-      class="chip"
-      style="background:${p.bg};color:${p.fg}"
-    >
-      ${esc(cat)}
-    </span>
-  `;
+  return `<span class="chip" style="background:${p.bg};color:${p.fg}">${esc(cat)}</span>`;
 }
-
+// 설정된 분류 + 데이터에만 남아있는 분류(삭제된 것 포함)까지 합쳐서 반환
 function allCats(){
   const set=[...S.cats];
-
-  [
-    ...S.budget,
-    ...S.expenses,
-    ...S.checklist
-  ].forEach(x=>{
-    if(
-      x.category &&
-      !set.includes(x.category)
-    ){
-      set.push(x.category);
-    }
+  [...S.budget,...S.expenses,...S.checklist].forEach(x=>{
+    if(x.category&&!set.includes(x.category)) set.push(x.category);
   });
-
   return set;
 }
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const won=n=>(n||0).toLocaleString('ko-KR')+'원';
+const $=id=>document.getElementById(id);
+const esc=s=>(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
 
-const uid=()=>{
-  return Date.now().toString(36)
-    +Math.random().toString(36).slice(2,6);
-};
-
-const won=n=>{
-  return (n||0).toLocaleString('ko-KR')+'원';
-};
-
-const $=id=>{
-  return document.getElementById(id);
-};
-
-const esc=s=>{
-  return (s||'').replace(
-    /[&<>"]/g,
-    m=>({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      '"':'&quot;'
-    }[m])
-  );
-};
-
-let S={
-  budget:[],
-  expenses:[],
-  checklist:[],
-  cats:[...DEFAULT_CATS],
-  catColors:{},
-
-  meta:{
-    label:'POD CHURCH',
-    title:'ACCOUNTING PROGRAM',
-    sub:'POD CHURCH 회계 프로그램'
-  }
-};
-
-let editingExp=null;
-let editingBg=null;
-let editingCk=null;
-let pendingReceipt=null;
-
+let S={budget:[],expenses:[],checklist:[],cats:[...DEFAULT_CATS],catColors:{},
+  meta:{label:'POD CHURCH',title:'ACCOUNTING PROGRAM',sub:'포드처치 회계 프로그램'}};
+let editingExp=null,editingBg=null,editingCk=null,pendingReceipt=null;
 let ckFilterVal='전체';
 let db=null;
+const col=name=>collection(db,`${EVENT}_${name}`);
+const settingsRef=()=>doc(db,`${EVENT}_meta`,'settings');
 
-const col=name=>{
-  return collection(
-    db,
-    `${EVENT}_${name}`
-  );
-};
-
-const settingsRef=()=>{
-  return doc(
-    db,
-    `${EVENT}_meta`,
-    'settings'
-  );
-};
-
+/* ── 초기화 ── */
 async function boot(){
-  document.title=BROWSER_TITLE;
-
-  if(firebaseConfig.apiKey.includes('여기에')){
-    $('setupOverlay').classList.add('on');
-    return;
-  }
-
+  if(firebaseConfig.apiKey.includes('여기에')){ $('setupOverlay').classList.add('on'); return; }
   try{
     const app=initializeApp(firebaseConfig);
-
     db=getFirestore(app);
-
-    await signInAnonymously(
-      getAuth(app)
-    );
-
-    onSnapshot(
-      settingsRef(),
-      snap=>{
-        const d=snap.data();
-
-        if(
-          d &&
-          Array.isArray(d.cats) &&
-          d.cats.length
-        ){
-          S.cats=d.cats;
+    await signInAnonymously(getAuth(app));
+    onSnapshot(settingsRef(),snap=>{
+      const d=snap.data();
+      if(d&&Array.isArray(d.cats)&&d.cats.length){
+        const isOldDefault=d.cats.length===3
+          && d.cats[0]==='CATEGORY1'
+          && d.cats[1]==='CATEGORY2'
+          && d.cats[2]==='CATEGORY3';
+        S.cats=isOldDefault?[...DEFAULT_CATS]:d.cats;
+        if(isOldDefault){
+          setDoc(settingsRef(),{cats:S.cats},{merge:true}).catch(console.error);
         }
-
-        if(d&&d.catColors){
-          S.catColors=d.catColors;
-        }
-
-        if(d){
-          if(d.title!==undefined){
-            S.meta.title=d.title;
-          }
-
-          if(d.sub!==undefined){
-            S.meta.sub=d.sub;
-          }
-
-          if(d.label!==undefined){
-            S.meta.label=d.label;
-          }
-        }
-
-        renderHeader();
-        renderAll();
       }
-    );
-
-    [
-      'budget',
-      'expenses',
-      'checklist'
-    ].forEach(name=>{
-      onSnapshot(
-        col(name),
-
+      if(d&&d.catColors) S.catColors=d.catColors;
+      if(d){
+        if(d.title!==undefined) S.meta.title=d.title;
+        if(d.sub!==undefined) S.meta.sub=d.sub;
+        if(d.label!==undefined) S.meta.label=d.label;
+      }
+      renderHeader(); renderAll();
+    });
+    ['budget','expenses','checklist'].forEach(name=>{
+      onSnapshot(col(name),
         snap=>{
-          S[name]=snap.docs.map(d=>({
-            id:d.id,
-            ...d.data()
-          }));
-
-          setSync(true);
-          renderAll();
+          S[name]=snap.docs.map(d=>({id:d.id,...d.data()}));
+          setSync(true); renderAll();
         },
-
-        err=>{
-          console.error(err);
-          setSync(false,true);
-        }
+        err=>{ console.error(err); setSync(false,true); }
       );
     });
-  }catch(e){
-    console.error(e);
-    setSync(false,true);
-  }
+  }catch(e){ console.error(e); setSync(false,true); }
 }
-
 function setSync(ok,err){
   const b=$('syncBadge');
-
-  if(err){
-    b.className='sync err';
-    b.textContent='연결 오류';
-    return;
-  }
-
-  if(ok){
-    b.className='sync on';
-    b.textContent='● 실시간 연결됨';
-    return;
-  }
-
-  b.className='sync';
-  b.textContent='연결 중…';
+  if(err){ b.className='sync err'; b.textContent='연결 오류'; }
+  else if(ok){ b.className='sync on'; b.textContent='● 실시간 연결됨'; }
+  else{ b.className='sync'; b.textContent='연결 중…'; }
 }
 
-function myName(){
-  try{
-    return localStorage.getItem('event_myname')||'';
-  }catch(e){
-    return '';
-  }
-}
-
+/* ── 내 이름 (결제자 기본값, 이 기기에만 저장) ── */
+function myName(){ try{ return localStorage.getItem('event_myname')||''; }catch(e){ return ''; } }
 window.askMyName=()=>{
-  const n=prompt(
-    '결제자 기본값으로 쓸 이름을 입력하세요',
-    myName()
-  );
-
-  if(n!==null){
-    try{
-      localStorage.setItem(
-        'event_myname',
-        n.trim()
-      );
-    }catch(e){}
-
-    renderMyName();
-  }
+  const n=prompt('결제자 기본값으로 쓸 이름을 입력하세요', myName());
+  if(n!==null){ try{ localStorage.setItem('event_myname',n.trim()); }catch(e){} renderMyName(); }
 };
+function renderMyName(){ $('myNameTag').innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>'+(myName()?esc(myName()):'이름 설정'); }
 
-function renderMyName(){
-  $('myNameTag').innerHTML=
-    '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>'
-    +(myName()?esc(myName()):'이름 설정');
-}
-
-document
-  .querySelectorAll('nav button')
-  .forEach(b=>{
-    b.onclick=()=>{
-      document
-        .querySelectorAll('nav button')
-        .forEach(x=>x.classList.remove('on'));
-
-      b.classList.add('on');
-
-      document
-        .querySelectorAll('.tab')
-        .forEach(t=>t.classList.remove('on'));
-
-      $('tab-'+b.dataset.tab)
-        .classList.add('on');
-
-      window.scrollTo(0,0);
-    };
-  });
-
+/* ── 탭 ── */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+    $('tab-'+b.dataset.tab).classList.add('on');
+    window.scrollTo(0,0);
+  };
+});
 function bindSeg(id){
-  $(id)
-    .querySelectorAll('button')
-    .forEach(b=>{
-      b.onclick=()=>{
-        $(id)
-          .querySelectorAll('button')
-          .forEach(x=>x.classList.remove('on'));
-
-        b.classList.add('on');
-      };
-    });
-}
-
-const segVal=id=>{
-  const on=$(id).querySelector('button.on');
-
-  return on
-    ? on.dataset.v
-    : null;
-};
-
-const segSet=(id,v)=>{
-  $(id)
-    .querySelectorAll('button')
-    .forEach(b=>{
-      b.classList.toggle(
-        'on',
-        b.dataset.v===v
-      );
-    });
-};
-
-function renderSegs(){
-  [
-    'expCatSeg',
-    'bgCatSeg',
-    'ckCatSeg'
-  ].forEach(id=>{
-    const prev=segVal(id);
-
-    $(id).innerHTML=S.cats
-      .map(c=>{
-        return `
-          <button data-v="${esc(c)}">
-            ${esc(c)}
-          </button>
-        `;
-      })
-      .join('');
-
-    bindSeg(id);
-
-    segSet(
-      id,
-      S.cats.includes(prev)
-        ? prev
-        : S.cats[0]
-    );
+  $(id).querySelectorAll('button').forEach(b=>{
+    b.onclick=()=>{ $(id).querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); };
   });
+}
+const segVal=id=>{ const on=$(id).querySelector('button.on'); return on?on.dataset.v:null; };
+const segSet=(id,v)=>$(id).querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
 
-  if(
-    ckFilterVal!=='전체' &&
-    !S.cats.includes(ckFilterVal)
-  ){
-    ckFilterVal='전체';
-  }
-
-  $('ckFilter').innerHTML=[
-    '전체',
-    ...S.cats
-  ].map(c=>{
-    return `
-      <button
-        data-f="${esc(c)}"
-        class="${ckFilterVal===c?'on':''}"
-      >
-        ${esc(c)}
-      </button>
-    `;
-  }).join('')+`
-    <button
-      onclick="openCatModal()"
-      title="분류 관리"
-    >
-      ⚙
-    </button>
-  `;
-
-  $('ckFilter')
-    .querySelectorAll('button[data-f]')
-    .forEach(b=>{
-      b.onclick=()=>{
-        ckFilterVal=b.dataset.f;
-        renderSegs();
-        renderCk();
-      };
-    });
+// 분류 목록이 바뀔 때마다 세그먼트/필터를 다시 그림 (선택값 유지)
+function renderSegs(){
+  ['expCatSeg','bgCatSeg','ckCatSeg'].forEach(id=>{
+    const prev=segVal(id);
+    $(id).innerHTML=S.cats.map(c=>`<button data-v="${esc(c)}">${esc(c)}</button>`).join('');
+    bindSeg(id);
+    segSet(id, S.cats.includes(prev)?prev:S.cats[0]);
+  });
+  if(ckFilterVal!=='전체'&&!S.cats.includes(ckFilterVal)) ckFilterVal='전체';
+  $('ckFilter').innerHTML=['전체',...S.cats].map(c=>
+    `<button data-f="${esc(c)}" class="${ckFilterVal===c?'on':''}">${esc(c)}</button>`
+  ).join('')+`<button onclick="openCatModal()" title="분류 관리"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.56 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.65 8.85a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.01A1.7 1.7 0 0 0 10.05 3V3a2 2 0 1 1 4 0v.09c0 .68.4 1.3 1.03 1.56a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.01c.26.63.88 1.03 1.56 1.03H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.51.95Z"/></svg></button>`;
+  $('ckFilter').querySelectorAll('button[data-f]').forEach(b=>{
+    b.onclick=()=>{ ckFilterVal=b.dataset.f; renderSegs(); renderCk(); };
+  });
 }
 
-function renderAll(){
-  renderSegs();
-  renderDash();
-  renderCk();
-  renderBudget();
-  renderExp();
-  renderSettle();
-  renderMyName();
-}
+/* ── 렌더 ── */
+function renderAll(){ renderSegs(); renderDash(); renderCk(); renderBudget(); renderExp(); renderSettle(); renderMyName(); }
 
 function renderDash(){
-  const totalB=S.budget.reduce(
-    (a,b)=>a+(+b.amount||0),
-    0
-  );
-
-  const totalE=S.expenses.reduce(
-    (a,b)=>a+(+b.amount||0),
-    0
-  );
-
+  const totalB=S.budget.reduce((a,b)=>a+(+b.amount||0),0);
+  const totalE=S.expenses.reduce((a,b)=>a+(+b.amount||0),0);
   const remain=totalB-totalE;
-
-  $('dashRemain').innerHTML=
-    remain.toLocaleString('ko-KR')
-    +'<small>원 '
-    +(remain>=0?'남음':'초과')
-    +'</small>';
-
-  $('dashRemain').style.color=
-    remain<0
-      ? 'var(--danger)'
-      : 'var(--ink)';
-
+  $('dashRemain').innerHTML=remain.toLocaleString('ko-KR')+'<small>원 '+(remain>=0?'남음':'초과')+'</small>';
+  $('dashRemain').style.color=remain<0?'var(--danger)':'var(--ink)';
   const fill=$('laneFill');
-
-  fill.style.width=
-    (
-      totalB
-        ? Math.min(100,totalE/totalB*100)
-        : 0
-    )+'%';
-
-  fill.classList.toggle(
-    'over',
-    totalB>0&&totalE>totalB
-  );
-
-  $('laneSpent').textContent=
-    '지출 '+won(totalE);
-
-  $('lanePct').textContent=
-    totalB
-      ? Math.round(totalE/totalB*100)+'%'
-      : '예산 미설정';
-
-  $('laneBudget').textContent=
-    '예산 '+won(totalB);
-
+  const lanePct=totalB?Math.min(100,totalE/totalB*100):0;
+  fill.style.width=lanePct+'%';
+  $('laneTrack').style.setProperty('--runner-pos',lanePct+'%');
+  fill.classList.toggle('over',totalB>0&&totalE>totalB);
+  $('laneSpent').textContent='지출 '+won(totalE);
+  $('lanePct').textContent=totalB?Math.round(totalE/totalB*100)+'%':'예산 미설정';
+  $('laneBudget').textContent='예산 '+won(totalB);
   $('stBudget').textContent=won(totalB);
   $('stSpent').textContent=won(totalE);
   $('stRemain').textContent=won(remain);
-
-  $('stRemainBox').className=
-    'stat'+(remain<0?' red':'');
+  $('stRemainBox').className='stat'+(remain<0?' red':'');
 
   let html='';
-
   allCats().forEach(c=>{
-    const b=S.budget
-      .filter(x=>x.category===c)
-      .reduce(
-        (a,x)=>a+(+x.amount||0),
-        0
-      );
-
-    const e=S.expenses
-      .filter(x=>x.category===c)
-      .reduce(
-        (a,x)=>a+(+x.amount||0),
-        0
-      );
-
-    if(!b&&!e){
-      return;
-    }
-
-    const p=b
-      ? Math.min(100,e/b*100)
-      : 100;
-
-    html+=`
-      <div class="row">
-        <span class="nm">${esc(c)}</span>
-
-        <span class="bar">
-          <i
-            style="
-              width:${p}%;
-              ${e>b&&b?'background:var(--track)':''}
-            "
-          ></i>
-        </span>
-
-        <span class="amt">
-          ${e.toLocaleString('ko-KR')}
-          /
-          ${b.toLocaleString('ko-KR')}
-        </span>
-      </div>
-    `;
+    const b=S.budget.filter(x=>x.category===c).reduce((a,x)=>a+(+x.amount||0),0);
+    const e=S.expenses.filter(x=>x.category===c).reduce((a,x)=>a+(+x.amount||0),0);
+    if(!b&&!e)return;
+    const p=b?Math.min(100,e/b*100):100;
+    html+=`<div class="row"><span class="nm">${c}</span><span class="bar"><i style="width:${p}%;${e>b&&b?'background:var(--track)':''}"></i></span><span class="amt">${e.toLocaleString('ko-KR')} / ${b.toLocaleString('ko-KR')}</span></div>`;
   });
-
   $('catBars').innerHTML=html;
 
-  const done=S.checklist.filter(
-    c=>c.status==='done'
-  ).length;
+  const done=S.checklist.filter(c=>c.status==='done').length;
+  $('ckSummary').textContent=`${done} / ${S.checklist.length} 완료`;
+  $('ckFill').style.width=(S.checklist.length?done/S.checklist.length*100:0)+'%';
+  const pending=S.checklist.filter(c=>c.status!=='done').slice(0,3);
+  $('homeCkPreview').innerHTML=pending.length
+    ? pending.map(c=>`<div class="item"><div class="grow"><div class="t1">${esc(c.name)}</div><div class="t2">${chip(c.category)}${c.owner?esc(c.owner):''}${c.due?' · ~'+c.due:''}</div></div></div>`).join('')
+    : '<div class="empty">남은 준비 항목이 없습니다 🎉</div>';
 
-  $('ckSummary').textContent=
-    `${done} / ${S.checklist.length} 완료`;
-
-  $('ckFill').style.width=
-    (
-      S.checklist.length
-        ? done/S.checklist.length*100
-        : 0
-    )+'%';
-
-  const pending=S.checklist
-    .filter(c=>c.status!=='done')
-    .slice(0,3);
-
-  $('homeCkPreview').innerHTML=
-    pending.length
-      ? pending.map(c=>{
-          return `
-            <div class="item">
-              <div class="grow">
-                <div class="t1">
-                  ${esc(c.name)}
-                </div>
-
-                <div class="t2">
-                  ${chip(c.category)}
-                  ${c.owner?esc(c.owner):''}
-                  ${c.due?' · ~'+c.due:''}
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('')
-      : '<div class="empty">남은 준비 항목이 없습니다.</div>';
-
-  const recent=[
-    ...S.expenses
-  ].sort((a,b)=>{
-    return (b.date||'')<(a.date||'')
-      ? -1
-      : 1;
-  }).slice(0,3);
-
-  $('homeExpPreview').innerHTML=
-    recent.length
-      ? recent
-          .map(e=>expRow(e,false))
-          .join('')
-      : `
-        <div class="empty">
-          아직 지출 기록이 없습니다.<br>
-          지출 탭에서 첫 기록을 추가해보세요.
-        </div>
-      `;
+  const recent=[...S.expenses].sort((a,b)=>(b.date||'')<(a.date||'')?-1:1).slice(0,3);
+  $('homeExpPreview').innerHTML=recent.length
+    ? recent.map(e=>expRow(e,false)).join('')
+    : '<div class="empty">아직 지출 기록이 없습니다.<br>지출 탭에서 첫 기록을 추가해보세요.</div>';
 }
 
 function renderCk(){
-  const list=S.checklist.filter(c=>{
-    return ckFilterVal==='전체'
-      || c.category===ckFilterVal;
-  });
-
-  const order={
-    pending:0,
-    doing:1,
-    done:2
-  };
-
-  list.sort((a,b)=>{
-    return order[a.status]-order[b.status]
-      || (
-        (a.due||'9')<(b.due||'9')
-          ? -1
-          : 1
-      );
-  });
-
-  $('ckList').innerHTML=list.length
-    ? list.map(c=>{
-        const ckCls=
-          c.status==='done'
-            ? 'done'
-            : c.status==='doing'
-              ? 'doing'
-              : '';
-
-        const mark=
-          c.status==='done'
-            ? '✓'
-            : c.status==='doing'
-              ? '…'
-              : '';
-
-        const st=
-          c.status==='doing'
-            ? '<span class="chip amber">진행중</span>'
-            : '';
-
-        return `
-          <div
-            class="item ${c.status==='done'?'done':''}"
-          >
-            <div
-              class="ck ${ckCls}"
-              onclick="cycleCk('${c.id}')"
-            >
-              ${mark}
-            </div>
-
-            <div
-              class="grow"
-              onclick="openCkModal('${c.id}')"
-            >
-              <div class="t1">
-                ${esc(c.name)}
-              </div>
-
-              <div class="t2">
-                ${chip(c.category)}
-                ${st}
-                ${c.owner?esc(c.owner):''}
-                ${c.due?' · ~'+c.due:''}
-                ${c.note?' · '+esc(c.note):''}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('')
-    : `
-      <div class="empty">
-        준비 항목을 추가해보세요.
+  const list=S.checklist.filter(c=>ckFilterVal==='전체'||c.category===ckFilterVal);
+  const order={pending:0,doing:1,done:2};
+  list.sort((a,b)=>order[a.status]-order[b.status]||((a.due||'9')<(b.due||'9')?-1:1));
+  $('ckList').innerHTML=list.length?list.map(c=>{
+    const ckCls=c.status==='done'?'done':c.status==='doing'?'doing':'';
+    const mark=c.status==='done'?'✓':c.status==='doing'?'…':'';
+    const st=c.status==='doing'?'<span class="chip amber">진행중</span>':'';
+    return `<div class="item ${c.status==='done'?'done':''}">
+      <div class="ck ${ckCls}" onclick="cycleCk('${c.id}')">${mark}</div>
+      <div class="grow" onclick="openCkModal('${c.id}')">
+        <div class="t1">${esc(c.name)}</div>
+        <div class="t2">${chip(c.category)}${st}${c.owner?esc(c.owner):''}${c.due?' · ~'+c.due:''}${c.note?' · '+esc(c.note):''}</div>
       </div>
-    `;
+    </div>`;
+  }).join(''):'<div class="empty">준비 항목을 추가해보세요.<br>예: 작년 정산자료 요청, 푸드트럭 업체 견적 비교</div>';
 }
 
 function renderBudget(){
-  const total=S.budget.reduce(
-    (a,b)=>a+(+b.amount||0),
-    0
-  );
-
-  $('budgetTotal').textContent=
-    '합계 '+won(total);
-
-  const sorted=[
-    ...S.budget
-  ].sort((a,b)=>{
-    return allCats().indexOf(a.category)
-      -allCats().indexOf(b.category);
-  });
-
-  $('budgetList').innerHTML=
-    sorted.length
-      ? sorted.map(b=>{
-          return `
-            <div
-              class="item"
-              onclick="openBgModal('${b.id}')"
-            >
-              <div class="grow">
-                <div class="t1">
-                  ${esc(b.name)}
-                </div>
-
-                <div class="t2">
-                  ${chip(b.category)}
-                </div>
-              </div>
-
-              <div class="amt">
-                ${won(+b.amount||0)}
-              </div>
-            </div>
-          `;
-        }).join('')
-      : `
-        <div class="empty">
-          예산 항목이 없습니다.<br>
-          아래 버튼으로 추가하세요.
-        </div>
-      `;
+  const total=S.budget.reduce((a,b)=>a+(+b.amount||0),0);
+  $('budgetTotal').textContent='합계 '+won(total);
+  const sorted=[...S.budget].sort((a,b)=>allCats().indexOf(a.category)-allCats().indexOf(b.category));
+  $('budgetList').innerHTML=sorted.length?sorted.map(b=>`
+    <div class="item" onclick="openBgModal('${b.id}')">
+      <div class="grow"><div class="t1">${esc(b.name)}</div><div class="t2">${chip(b.category)}</div></div>
+      <div class="amt">${won(+b.amount||0)}</div>
+    </div>`).join('')
+    :'<div class="empty">예산 항목이 없습니다. 아래 버튼으로 추가하세요.<br>예: 경기용품, 상품/간식, 푸드트럭 계약비, 예비비</div>';
 }
 
 function expRow(e,clickable=true){
   const thumb=e.receipt
-    ? `
-      <img
-        class="thumb"
-        src="${e.receipt}"
-        onclick="event.stopPropagation();viewPhoto('${e.id}')"
-      >
-    `
-    : `
-      <div class="no-thumb">
-        ▧
-      </div>
-    `;
-
-  const personal=
-    e.method==='개인카드'
-    || e.method==='개인현금';
-
-  const sub=personal
-    ? (
-        e.reimbursed
-          ? '<span class="sub ok">환급완료</span>'
-          : '<span class="sub">환급필요</span>'
-      )
-    : '';
-
-  return `
-    <div
-      class="item"
-      ${clickable?`onclick="openExpModal('${e.id}')"`:''}
-    >
-      ${thumb}
-
-      <div class="grow">
-        <div class="t1">
-          ${esc(e.desc)}
-        </div>
-
-        <div class="t2">
-          ${chip(e.category)}
-          ${e.date||''}
-          ·
-          ${esc(e.method||'')}
-          ${e.payer?' · '+esc(e.payer):''}
-        </div>
-      </div>
-
-      <div class="amt">
-        ${won(+e.amount||0)}
-        ${sub}
-      </div>
-    </div>
-  `;
+    ?`<img class="thumb" src="${e.receipt}" onclick="event.stopPropagation();viewPhoto('${e.id}')">`
+    :`<div class="no-thumb"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h14v20l-2-1.3L15 22l-2-1.3L11 22l-2-1.3L7 22l-2-1.3V2Z" transform="translate(0 0) scale(0.98)"/><path d="M9 7h6M9 11h6M9 15h3.5"/></svg></div>`;
+  const personal=e.method==='개인카드'||e.method==='개인현금';
+  const sub=personal?(e.reimbursed?'<span class="sub ok">환급완료</span>':'<span class="sub">환급필요</span>'):'';
+  return `<div class="item" ${clickable?`onclick="openExpModal('${e.id}')"`:''}>
+    ${thumb}
+    <div class="grow"><div class="t1">${esc(e.desc)}</div>
+    <div class="t2">${chip(e.category)}${e.date||''} · ${esc(e.method||'')}${e.payer?' · '+esc(e.payer):''}</div></div>
+    <div class="amt">${won(+e.amount||0)}${sub}</div>
+  </div>`;
 }
 
 let expSortVal='date';
-
-$('expSortSeg')
-  .querySelectorAll('button')
-  .forEach(b=>{
-    b.onclick=()=>{
-      $('expSortSeg')
-        .querySelectorAll('button')
-        .forEach(x=>x.classList.remove('on'));
-
-      b.classList.add('on');
-
-      expSortVal=b.dataset.s;
-      renderExp();
-    };
-  });
-
+$('expSortSeg').querySelectorAll('button').forEach(b=>{
+  b.onclick=()=>{
+    $('expSortSeg').querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); expSortVal=b.dataset.s; renderExp();
+  };
+});
 function fmtDate(d){
-  if(!d){
-    return '(날짜 미입력)';
-  }
-
+  if(!d) return '(날짜 미입력)';
   const dt=new Date(d+'T00:00:00');
-
-  if(isNaN(dt)){
-    return d;
-  }
-
-  return `${d} (${[
-    '일',
-    '월',
-    '화',
-    '수',
-    '목',
-    '금',
-    '토'
-  ][dt.getDay()]})`;
+  if(isNaN(dt)) return d;
+  return `${d} (${['일','월','화','수','목','금','토'][dt.getDay()]})`;
 }
-
 function renderExp(){
-  const total=S.expenses.reduce(
-    (a,b)=>a+(+b.amount||0),
-    0
-  );
-
-  $('expTotal').textContent=
-    '합계 '+won(total);
-
+  const total=S.expenses.reduce((a,b)=>a+(+b.amount||0),0);
+  $('expTotal').textContent='합계 '+won(total);
   if(!S.expenses.length){
-    $('expList').innerHTML=`
-      <div class="empty">
-        지출을 기록하면 영수증과 함께
-        팀 전체가 실시간으로 봅니다.
-      </div>
-    `;
-
+    $('expList').innerHTML='<div class="empty">지출을 기록하면 영수증과 함께 팀 전체가 실시간으로 봅니다.</div>';
     return;
   }
-
   let html='';
-
   if(expSortVal==='date'){
-    const dates=[
-      ...new Set(
-        S.expenses.map(e=>e.date||'')
-      )
-    ].sort().reverse();
-
+    // 날짜별: 최신 날짜 그룹부터, 그룹마다 일일 소계
+    const dates=[...new Set(S.expenses.map(e=>e.date||''))].sort().reverse();
     dates.forEach(d=>{
-      const items=S.expenses.filter(e=>{
-        return (e.date||'')===d;
-      });
-
-      const sum=items.reduce(
-        (a,e)=>a+(+e.amount||0),
-        0
-      );
-
-      html+=`
-        <div class="grp">
-          <span>
-            ${fmtDate(d)} · ${items.length}건
-          </span>
-
-          <span class="sum">
-            ${won(sum)}
-          </span>
-        </div>
-      `;
-
-      html+=items
-        .map(e=>expRow(e))
-        .join('');
+      const items=S.expenses.filter(e=>(e.date||'')===d);
+      const sum=items.reduce((a,e)=>a+(+e.amount||0),0);
+      html+=`<div class="grp"><span>${fmtDate(d)} · ${items.length}건</span><span class="sum">${won(sum)}</span></div>`;
+      html+=items.map(e=>expRow(e)).join('');
     });
   }else{
+    // 분류별: 분류 관리 순서대로, 그룹마다 분류 소계 (그룹 안은 최신순)
     allCats().forEach(c=>{
-      const items=S.expenses
-        .filter(e=>e.category===c)
-        .sort((a,b)=>{
-          return (b.date||'')<(a.date||'')
-            ? -1
-            : 1;
-        });
-
-      if(!items.length){
-        return;
-      }
-
-      const sum=items.reduce(
-        (a,e)=>a+(+e.amount||0),
-        0
-      );
-
-      html+=`
-        <div class="grp">
-          <span>
-            ${chip(c)} ${items.length}건
-          </span>
-
-          <span class="sum">
-            ${won(sum)}
-          </span>
-        </div>
-      `;
-
-      html+=items
-        .map(e=>expRow(e))
-        .join('');
+      const items=S.expenses.filter(e=>e.category===c).sort((a,b)=>(b.date||'')<(a.date||'')?-1:1);
+      if(!items.length)return;
+      const sum=items.reduce((a,e)=>a+(+e.amount||0),0);
+      html+=`<div class="grp"><span>${chip(c)} ${items.length}건</span><span class="sum">${won(sum)}</span></div>`;
+      html+=items.map(e=>expRow(e)).join('');
     });
-
-    const orphan=S.expenses.filter(
-      e=>!e.category
-    );
-
+    // 분류가 비어있는 지출(예외 방어)
+    const orphan=S.expenses.filter(e=>!e.category);
     if(orphan.length){
-      const sum=orphan.reduce(
-        (a,e)=>a+(+e.amount||0),
-        0
-      );
-
-      html+=`
-        <div class="grp">
-          <span>
-            (분류 없음) ${orphan.length}건
-          </span>
-
-          <span class="sum">
-            ${won(sum)}
-          </span>
-        </div>
-      `;
-
-      html+=orphan
-        .map(e=>expRow(e))
-        .join('');
+      const sum=orphan.reduce((a,e)=>a+(+e.amount||0),0);
+      html+=`<div class="grp"><span>(분류 없음) ${orphan.length}건</span><span class="sum">${won(sum)}</span></div>`;
+      html+=orphan.map(e=>expRow(e)).join('');
     }
   }
-
   $('expList').innerHTML=html;
 }
 
 function renderSettle(){
-  let rows='';
-  let tB=0;
-  let tE=0;
-
+  let rows='',tB=0,tE=0;
   allCats().forEach(c=>{
-    const catB=S.budget
-      .filter(b=>b.category===c)
-      .reduce(
-        (a,b)=>a+(+b.amount||0),
-        0
-      );
-
-    const catE=S.expenses
-      .filter(e=>e.category===c)
-      .reduce(
-        (a,e)=>a+(+e.amount||0),
-        0
-      );
-
-    if(!catB&&!catE){
-      return;
-    }
-
-    tB+=catB;
-    tE+=catE;
-
+    const catB=S.budget.filter(b=>b.category===c).reduce((a,b)=>a+(+b.amount||0),0);
+    const catE=S.expenses.filter(e=>e.category===c).reduce((a,e)=>a+(+e.amount||0),0);
+    if(!catB&&!catE)return;
+    tB+=catB;tE+=catE;
     const d=catB-catE;
-
-    rows+=`
-      <tr>
-        <td>
-          <b>${esc(c)}</b>
-        </td>
-
-        <td class="num">
-          ${catB.toLocaleString('ko-KR')}
-        </td>
-
-        <td class="num">
-          ${catE.toLocaleString('ko-KR')}
-        </td>
-
-        <td class="num ${d>=0?'diff-plus':'diff-minus'}">
-          ${d>=0?'+':''}
-          ${d.toLocaleString('ko-KR')}
-        </td>
-      </tr>
-    `;
+    rows+=`<tr><td><b>${c}</b></td><td class="num">${catB.toLocaleString('ko-KR')}</td><td class="num">${catE.toLocaleString('ko-KR')}</td><td class="num ${d>=0?'diff-plus':'diff-minus'}">${d>=0?'+':''}${d.toLocaleString('ko-KR')}</td></tr>`;
   });
-
   const td=tB-tE;
+  $('settleTable').innerHTML=`<tr><th>분류</th><th class="num">예산</th><th class="num">지출</th><th class="num">잔액</th></tr>${rows}
+  <tr class="total"><td>합계</td><td class="num">${tB.toLocaleString('ko-KR')}</td><td class="num">${tE.toLocaleString('ko-KR')}</td><td class="num ${td>=0?'diff-plus':'diff-minus'}">${td>=0?'+':''}${td.toLocaleString('ko-KR')}</td></tr>`;
 
-  $('settleTable').innerHTML=`
-    <tr>
-      <th>분류</th>
-      <th class="num">예산</th>
-      <th class="num">지출</th>
-      <th class="num">잔액</th>
-    </tr>
-
-    ${rows}
-
-    <tr class="total">
-      <td>합계</td>
-
-      <td class="num">
-        ${tB.toLocaleString('ko-KR')}
-      </td>
-
-      <td class="num">
-        ${tE.toLocaleString('ko-KR')}
-      </td>
-
-      <td class="num ${td>=0?'diff-plus':'diff-minus'}">
-        ${td>=0?'+':''}
-        ${td.toLocaleString('ko-KR')}
-      </td>
-    </tr>
-  `;
-
+  // 결제자별 환급 집계
   const map={};
-
   S.expenses.forEach(e=>{
-    if(
-      e.method!=='개인카드'
-      && e.method!=='개인현금'
-    ){
-      return;
-    }
-
+    if(e.method!=='개인카드'&&e.method!=='개인현금')return;
     const who=e.payer||'(결제자 미입력)';
-
-    if(!map[who]){
-      map[who]={
-        due:0,
-        done:0
-      };
-    }
-
-    if(e.reimbursed){
-      map[who].done+=+e.amount||0;
-    }else{
-      map[who].due+=+e.amount||0;
-    }
+    if(!map[who])map[who]={due:0,done:0};
+    if(e.reimbursed)map[who].done+=+e.amount||0;
+    else map[who].due+=+e.amount||0;
   });
-
   const names=Object.keys(map);
-
-  $('payoutList').innerHTML=
-    names.length
-      ? names.map(n=>{
-          const m=map[n];
-
-          return `
-            <div class="pay-row">
-              <span class="who">
-                ${esc(n)}
-              </span>
-
-              <span class="due ${m.due?'':'zero'}">
-                ${
-                  m.due
-                    ? '환급 필요 '+won(m.due)
-                    : '✓ 정산 완료'
-                }
-              </span>
-            </div>
-
-            ${
-              m.done
-                ? `
-                  <div
-                    style="
-                      font-size:11px;
-                      color:var(--muted);
-                      margin:-6px 0 6px;
-                      text-align:right
-                    "
-                  >
-                    환급 완료분 ${won(m.done)}
-                  </div>
-                `
-                : ''
-            }
-          `;
-        }).join('')
-      : `
-        <div class="empty">
-          개인 결제 건이 없습니다.
-        </div>
-      `;
+  $('payoutList').innerHTML=names.length?names.map(n=>{
+    const m=map[n];
+    return `<div class="pay-row"><span class="who">${esc(n)}</span>
+      <span class="due ${m.due?'':'zero'}">${m.due?'환급 필요 '+won(m.due):'✓ 정산 완료'}</span></div>
+      ${m.done?`<div style="font-size:11px;color:var(--muted);margin:-6px 0 6px;text-align:right">환급 완료분 ${won(m.done)}</div>`:''}`;
+  }).join(''):'<div class="empty">개인 결제 건이 없습니다.</div>';
 }
 
-window.openModal=id=>{
-  $(id).classList.add('on');
-  document.body.style.overflow='hidden';
-};
-
+/* ── 모달 공통 ── */
+window.openModal=id=>{ $(id).classList.add('on'); document.body.style.overflow='hidden'; };
 window.closeModal=id=>{
   $(id).classList.remove('on');
-  document.body.style.overflow='';
+  document.body.style.overflow=document.querySelector('.modal-bg.on')?'hidden':'';
 };
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{ if(e.target===m)closeModal(m.id); }));
 
-document
-  .querySelectorAll('.modal-bg')
-  .forEach(m=>{
-    m.addEventListener('click',e=>{
-      if(e.target===m){
-        closeModal(m.id);
-      }
-    });
-  });
-
+/* ── 지출 ── */
 window.onMethodChange=()=>{
   const v=$('expMethod').value;
-
-  $('reimburseRow').style.display=
-    (
-      v==='개인카드'
-      || v==='개인현금'
-    )
-      ? 'flex'
-      : 'none';
+  $('reimburseRow').style.display=(v==='개인카드'||v==='개인현금')?'flex':'none';
 };
-
 window.openExpModal=id=>{
-  editingExp=id
-    ? S.expenses.find(e=>e.id===id)
-    : null;
-
+  editingExp=id?S.expenses.find(e=>e.id===id):null;
   pendingReceipt=null;
-
-  $('expModalTitle').textContent=
-    editingExp
-      ? '지출 수정'
-      : '지출 기록';
-
-  $('expDate').value=
-    editingExp
-      ? editingExp.date
-      : new Date().toISOString().slice(0,10);
-
-  segSet(
-    'expCatSeg',
-    editingExp
-      && allCats().includes(editingExp.category)
-        ? editingExp.category
-        : S.cats[0]
-  );
-
-  $('expDesc').value=
-    editingExp
-      ? editingExp.desc
-      : '';
-
-  $('expAmt').value=
-    editingExp
-      ? editingExp.amount
-      : '';
-
-  $('expMethod').value=
-    editingExp
-      ? editingExp.method||'개인카드'
-      : '개인카드';
-
-  $('expPayer').value=
-    editingExp
-      ? editingExp.payer||''
-      : myName();
-
-  $('expReimbursed').checked=
-    editingExp
-      ? !!editingExp.reimbursed
-      : false;
-
+  $('expModalTitle').textContent=editingExp?'지출 수정':'지출 기록';
+  $('expDate').value=editingExp?editingExp.date:new Date().toISOString().slice(0,10);
+  segSet('expCatSeg',editingExp&&allCats().includes(editingExp.category)?editingExp.category:S.cats[0]);
+  $('expDesc').value=editingExp?editingExp.desc:'';
+  $('expAmt').value=editingExp?editingExp.amount:'';
+  $('expMethod').value=editingExp?(editingExp.method||'개인카드'):'개인카드';
+  $('expPayer').value=editingExp?(editingExp.payer||''):myName();
+  $('expReimbursed').checked=editingExp?!!editingExp.reimbursed:false;
   onMethodChange();
-
-  const img=editingExp
-    ? editingExp.receipt
-    : null;
-
-  $('receiptDrop').className=
-    'receipt-drop'+(img?' has':'');
-
-  $('receiptDrop').textContent=
-    img
-      ? '✓ 영수증 첨부됨 (탭하여 변경)'
-      : '촬영 또는 사진 선택';
-
-  $('receiptPrev').style.display=
-    img
-      ? 'block'
-      : 'none';
-
-  if(img){
-    $('receiptPrev').src=img;
-  }
-
-  $('expDeleteBtn').style.display=
-    editingExp
-      ? 'block'
-      : 'none';
-
+  const img=editingExp?editingExp.receipt:null;
+  $('receiptDrop').className='receipt-drop'+(img?' has':'');
+  $('receiptDrop').innerHTML=img?'✓ 영수증 첨부됨 (탭하여 변경)':'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><path d="M4 7h3l2-2.5h6L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13.5" r="3.5"/></svg>촬영 또는 사진 선택';
+  $('receiptPrev').style.display=img?'block':'none';
+  if(img)$('receiptPrev').src=img;
+  $('expDeleteBtn').style.display=editingExp?'block':'none';
   openModal('expModal');
 };
-
 window.onReceiptPick=input=>{
-  const f=input.files[0];
-
-  if(!f){
-    return;
-  }
-
+  const f=input.files[0]; if(!f)return;
   const r=new FileReader();
-
   r.onload=()=>{
     const img=new Image();
-
     img.onload=()=>{
-      const max=800;
-
-      const sc=Math.min(
-        1,
-        max/Math.max(
-          img.width,
-          img.height
-        )
-      );
-
+      // Firestore 문서 1MB 제한 → 최대 800px, JPEG 55%로 압축
+      const max=800,sc=Math.min(1,max/Math.max(img.width,img.height));
       const cv=document.createElement('canvas');
-
-      cv.width=Math.round(img.width*sc);
-      cv.height=Math.round(img.height*sc);
-
-      cv.getContext('2d')
-        .drawImage(
-          img,
-          0,
-          0,
-          cv.width,
-          cv.height
-        );
-
-      let out=cv.toDataURL(
-        'image/jpeg',
-        .55
-      );
-
-      if(out.length>850000){
-        out=cv.toDataURL(
-          'image/jpeg',
-          .35
-        );
-      }
-
+      cv.width=Math.round(img.width*sc); cv.height=Math.round(img.height*sc);
+      cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+      let out=cv.toDataURL('image/jpeg',0.55);
+      if(out.length>850000) out=cv.toDataURL('image/jpeg',0.35); // 안전장치
       pendingReceipt=out;
-
-      $('receiptDrop').className=
-        'receipt-drop has';
-
-      $('receiptDrop').textContent=
-        '✓ 영수증 첨부됨 (탭하여 변경)';
-
-      $('receiptPrev').src=
-        pendingReceipt;
-
-      $('receiptPrev').style.display=
-        'block';
+      $('receiptDrop').className='receipt-drop has';
+      $('receiptDrop').innerHTML='✓ 영수증 첨부됨 (탭하여 변경)';
+      $('receiptPrev').src=pendingReceipt;
+      $('receiptPrev').style.display='block';
     };
-
     img.src=r.result;
   };
-
   r.readAsDataURL(f);
   input.value='';
 };
-
 window.saveExpense=async()=>{
-  const desc=$('expDesc').value.trim();
-  const amt=+$('expAmt').value;
-
-  if(!desc){
-    toast('내용을 입력해주세요');
-    return;
-  }
-
-  if(!amt){
-    toast('금액을 입력해주세요');
-    return;
-  }
-
-  const btn=$('expSaveBtn');
-
-  btn.disabled=true;
-  btn.textContent='저장 중…';
-
-  const id=editingExp
-    ? editingExp.id
-    : uid();
-
+  const desc=$('expDesc').value.trim(),amt=+$('expAmt').value;
+  if(!desc){toast('내용을 입력해주세요');return;}
+  if(!amt){toast('금액을 입력해주세요');return;}
+  const btn=$('expSaveBtn'); btn.disabled=true; btn.textContent='저장 중…';
+  const id=editingExp?editingExp.id:uid();
   const data={
-    date:$('expDate').value,
-    category:segVal('expCatSeg')||S.cats[0],
-    desc,
-    amount:amt,
-    method:$('expMethod').value,
-    payer:$('expPayer').value.trim(),
-    reimbursed:$('expReimbursed').checked,
-
-    receipt:
-      pendingReceipt
-      || (
-        editingExp
-          ? editingExp.receipt||null
-          : null
-      ),
-
+    date:$('expDate').value, category:segVal('expCatSeg')||S.cats[0],
+    desc, amount:amt, method:$('expMethod').value,
+    payer:$('expPayer').value.trim(), reimbursed:$('expReimbursed').checked,
+    receipt:pendingReceipt||(editingExp?editingExp.receipt||null:null),
     updatedAt:Date.now()
   };
-
   try{
-    await setDoc(
-      doc(col('expenses'),id),
-      data
-    );
-
-    if(
-      $('expPayer').value.trim()
-      && !myName()
-    ){
-      try{
-        localStorage.setItem(
-          'event_myname',
-          $('expPayer').value.trim()
-        );
-      }catch(e){}
-    }
-
-    closeModal('expModal');
-
-    toast(
-      '지출이 저장되었습니다 (팀 전체 반영)'
-    );
-  }catch(e){
-    console.error(e);
-
-    toast(
-      '저장 실패 — 네트워크를 확인해주세요'
-    );
-  }
-
-  btn.disabled=false;
-  btn.textContent='저장';
+    await setDoc(doc(col('expenses'),id),data);
+    if($('expPayer').value.trim()&&!myName()){ try{localStorage.setItem('event_myname',$('expPayer').value.trim());}catch(e){} }
+    closeModal('expModal'); toast('지출이 저장되었습니다 (팀 전체 반영)');
+  }catch(e){ console.error(e); toast('저장 실패 — 네트워크를 확인해주세요'); }
+  btn.disabled=false; btn.textContent='저장';
 };
-
 window.deleteExpense=async()=>{
-  if(
-    !editingExp
-    || !confirm('이 지출 기록을 삭제할까요?')
-  ){
-    return;
-  }
-
-  try{
-    await deleteDoc(
-      doc(
-        col('expenses'),
-        editingExp.id
-      )
-    );
-
-    closeModal('expModal');
-    toast('삭제되었습니다');
-  }catch(e){
-    toast(
-      '삭제 실패 — 네트워크를 확인해주세요'
-    );
-  }
+  if(!editingExp||!confirm('이 지출 기록을 삭제할까요?'))return;
+  try{ await deleteDoc(doc(col('expenses'),editingExp.id)); closeModal('expModal'); toast('삭제되었습니다'); }
+  catch(e){ toast('삭제 실패 — 네트워크를 확인해주세요'); }
 };
-
 window.viewPhoto=id=>{
   const e=S.expenses.find(x=>x.id===id);
-
-  if(!e||!e.receipt){
-    return;
-  }
-
-  $('photoBig').src=e.receipt;
-  openModal('photoModal');
+  if(!e||!e.receipt)return;
+  $('photoBig').src=e.receipt; openModal('photoModal');
 };
 
+/* ── 예산 ── */
 window.openBgModal=id=>{
-  editingBg=id
-    ? S.budget.find(b=>b.id===id)
-    : null;
-
-  $('bgModalTitle').textContent=
-    editingBg
-      ? '예산 항목 수정'
-      : '예산 항목 추가';
-
-  segSet(
-    'bgCatSeg',
-    editingBg
-      && allCats().includes(editingBg.category)
-        ? editingBg.category
-        : S.cats[0]
-  );
-
-  $('bgName').value=
-    editingBg
-      ? editingBg.name
-      : '';
-
-  $('bgAmt').value=
-    editingBg
-      ? editingBg.amount
-      : '';
-
-  $('bgDeleteBtn').style.display=
-    editingBg
-      ? 'block'
-      : 'none';
-
+  editingBg=id?S.budget.find(b=>b.id===id):null;
+  $('bgModalTitle').textContent=editingBg?'예산 항목 수정':'예산 항목 추가';
+  segSet('bgCatSeg',editingBg&&allCats().includes(editingBg.category)?editingBg.category:S.cats[0]);
+  $('bgName').value=editingBg?editingBg.name:'';
+  $('bgAmt').value=editingBg?editingBg.amount:'';
+  $('bgDeleteBtn').style.display=editingBg?'block':'none';
   openModal('bgModal');
 };
-
 window.saveBudget=async()=>{
-  const name=$('bgName').value.trim();
-  const amt=+$('bgAmt').value||0;
-
-  if(!name){
-    toast('항목명을 입력해주세요');
-    return;
-  }
-
-  const id=editingBg
-    ? editingBg.id
-    : uid();
-
+  const name=$('bgName').value.trim(),amt=+$('bgAmt').value||0;
+  if(!name){toast('항목명을 입력해주세요');return;}
+  const id=editingBg?editingBg.id:uid();
   try{
-    await setDoc(
-      doc(col('budget'),id),
-      {
-        category:segVal('bgCatSeg')||S.cats[0],
-        name,
-        amount:amt
-      }
-    );
-
-    closeModal('bgModal');
-    toast('예산이 저장되었습니다');
-  }catch(e){
-    toast(
-      '저장 실패 — 네트워크를 확인해주세요'
-    );
-  }
+    await setDoc(doc(col('budget'),id),{category:segVal('bgCatSeg')||S.cats[0],name,amount:amt});
+    closeModal('bgModal'); toast('예산이 저장되었습니다');
+  }catch(e){ toast('저장 실패 — 네트워크를 확인해주세요'); }
 };
-
 window.deleteBudget=async()=>{
-  if(
-    !editingBg
-    || !confirm('이 예산 항목을 삭제할까요?')
-  ){
-    return;
-  }
-
-  try{
-    await deleteDoc(
-      doc(
-        col('budget'),
-        editingBg.id
-      )
-    );
-
-    closeModal('bgModal');
-    toast('삭제되었습니다');
-  }catch(e){
-    toast('삭제 실패');
-  }
+  if(!editingBg||!confirm('이 예산 항목을 삭제할까요?'))return;
+  try{ await deleteDoc(doc(col('budget'),editingBg.id)); closeModal('bgModal'); toast('삭제되었습니다'); }
+  catch(e){ toast('삭제 실패'); }
 };
 
+/* ── 체크리스트 ── */
 window.openCkModal=id=>{
-  editingCk=id
-    ? S.checklist.find(c=>c.id===id)
-    : null;
-
-  $('ckModalTitle').textContent=
-    editingCk
-      ? '준비 항목 수정'
-      : '준비 항목 추가';
-
-  segSet(
-    'ckCatSeg',
-    editingCk
-      && allCats().includes(editingCk.category)
-        ? editingCk.category
-        : S.cats[0]
-  );
-
-  $('ckName').value=
-    editingCk
-      ? editingCk.name
-      : '';
-
-  $('ckOwner').value=
-    editingCk
-      ? editingCk.owner||''
-      : '';
-
-  $('ckDue').value=
-    editingCk
-      ? editingCk.due||''
-      : '';
-
-  $('ckNote').value=
-    editingCk
-      ? editingCk.note||''
-      : '';
-
-  $('ckDeleteBtn').style.display=
-    editingCk
-      ? 'block'
-      : 'none';
-
+  editingCk=id?S.checklist.find(c=>c.id===id):null;
+  $('ckModalTitle').textContent=editingCk?'준비 항목 수정':'준비 항목 추가';
+  segSet('ckCatSeg',editingCk&&allCats().includes(editingCk.category)?editingCk.category:S.cats[0]);
+  $('ckName').value=editingCk?editingCk.name:'';
+  $('ckOwner').value=editingCk?(editingCk.owner||''):'';
+  $('ckDue').value=editingCk?(editingCk.due||''):'';
+  $('ckNote').value=editingCk?(editingCk.note||''):'';
+  $('ckDeleteBtn').style.display=editingCk?'block':'none';
   openModal('ckModal');
 };
-
 window.saveCk=async()=>{
   const name=$('ckName').value.trim();
-
-  if(!name){
-    toast('항목을 입력해주세요');
-    return;
-  }
-
-  const id=editingCk
-    ? editingCk.id
-    : uid();
-
-  const data={
-    category:segVal('ckCatSeg')||S.cats[0],
-    name,
-    owner:$('ckOwner').value.trim(),
-    due:$('ckDue').value,
-    note:$('ckNote').value.trim(),
-
-    status:
-      editingCk
-        ? editingCk.status
-        : 'pending'
-  };
-
-  try{
-    await setDoc(
-      doc(col('checklist'),id),
-      data
-    );
-
-    closeModal('ckModal');
-    toast('저장되었습니다');
-  }catch(e){
-    toast(
-      '저장 실패 — 네트워크를 확인해주세요'
-    );
-  }
+  if(!name){toast('항목을 입력해주세요');return;}
+  const id=editingCk?editingCk.id:uid();
+  const data={category:segVal('ckCatSeg')||S.cats[0],name,owner:$('ckOwner').value.trim(),due:$('ckDue').value,note:$('ckNote').value.trim(),status:editingCk?editingCk.status:'pending'};
+  try{ await setDoc(doc(col('checklist'),id),data); closeModal('ckModal'); toast('저장되었습니다'); }
+  catch(e){ toast('저장 실패 — 네트워크를 확인해주세요'); }
 };
-
 window.deleteCk=async()=>{
-  if(
-    !editingCk
-    || !confirm('이 항목을 삭제할까요?')
-  ){
-    return;
-  }
-
-  try{
-    await deleteDoc(
-      doc(
-        col('checklist'),
-        editingCk.id
-      )
-    );
-
-    closeModal('ckModal');
-    toast('삭제되었습니다');
-  }catch(e){
-    toast('삭제 실패');
-  }
+  if(!editingCk||!confirm('이 항목을 삭제할까요?'))return;
+  try{ await deleteDoc(doc(col('checklist'),editingCk.id)); closeModal('ckModal'); toast('삭제되었습니다'); }
+  catch(e){ toast('삭제 실패'); }
 };
-
 window.cycleCk=async id=>{
-  const c=S.checklist.find(x=>x.id===id);
-
-  if(!c){
-    return;
-  }
-
-  const next=
-    c.status==='pending'
-      ? 'doing'
-      : c.status==='doing'
-        ? 'done'
-        : 'pending';
-
-  try{
-    await setDoc(
-      doc(col('checklist'),id),
-      {
-        ...c,
-        status:next
-      }
-    );
-  }catch(e){
-    toast('변경 실패');
-  }
+  const c=S.checklist.find(x=>x.id===id); if(!c)return;
+  const next=c.status==='pending'?'doing':c.status==='doing'?'done':'pending';
+  try{ await setDoc(doc(col('checklist'),id),{...c,status:next}); }catch(e){ toast('변경 실패'); }
 };
 
+/* ── 내보내기 ── */
 function downloadFile(name,content,type){
-  const blob=new Blob(
-    [content],
-    {type}
-  );
-
+  const blob=new Blob([content],{type});
   const a=document.createElement('a');
-
-  a.href=URL.createObjectURL(blob);
-  a.download=name;
-  a.click();
-
-  setTimeout(
-    ()=>URL.revokeObjectURL(a.href),
-    4000
-  );
+  a.href=URL.createObjectURL(blob); a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
 }
-
-const fileSafe=t=>{
-  return (t||'POD_CHURCH').replace(
-    /[\\/:*?"<>|\s]+/g,
-    '_'
-  );
-};
-
+const fileSafe=t=>(t||'POD_CHURCH').replace(/[\\/:*?"<>|\s]+/g,'_');
 window.exportCSV=kind=>{
   const BOM='\uFEFF';
-
   if(kind==='expense'){
-    const csv=
-      BOM
-      +'날짜,분류,내용,금액,결제수단,결제자,환급상태,영수증\n'
-      +[
-        ...S.expenses
-      ].sort((a,b)=>{
-        return (a.date||'')<(b.date||'')
-          ? -1
-          : 1;
-      }).map(e=>{
-        const personal=
-          e.method==='개인카드'
-          || e.method==='개인현금';
-
-        const re=personal
-          ? (
-              e.reimbursed
-                ? '환급완료'
-                : '환급필요'
-            )
-          : '-';
-
-        return [
-          e.date,
-          e.category,
-          `"${(e.desc||'').replace(/"/g,'""')}"`,
-          e.amount,
-          e.method,
-          e.payer||'',
-          re,
-          e.receipt?'O':'X'
-        ].join(',');
+    const csv=BOM+'날짜,분류,내용,금액,결제수단,결제자,환급상태,영수증\n'+
+      [...S.expenses].sort((a,b)=>(a.date||'')<(b.date||'')?-1:1)
+      .map(e=>{
+        const personal=e.method==='개인카드'||e.method==='개인현금';
+        const re=personal?(e.reimbursed?'환급완료':'환급필요'):'-';
+        return [e.date,e.category,`"${(e.desc||'').replace(/"/g,'""')}"`,e.amount,e.method,e.payer||'',re,e.receipt?'O':'X'].join(',');
       }).join('\n');
-
-    downloadFile(
-      '지출내역_'+fileSafe(S.meta.title)+'.csv',
-      csv,
-      'text/csv;charset=utf-8'
-    );
+    downloadFile('지출내역_'+fileSafe(S.meta.title)+'.csv',csv,'text/csv;charset=utf-8');
   }else{
-    let rows='';
-    let tB=0;
-    let tE=0;
-
+    let rows='',tB=0,tE=0;
     allCats().forEach(c=>{
-      const b=S.budget
-        .filter(x=>x.category===c)
-        .reduce(
-          (a,x)=>a+(+x.amount||0),
-          0
-        );
-
-      const e=S.expenses
-        .filter(x=>x.category===c)
-        .reduce(
-          (a,x)=>a+(+x.amount||0),
-          0
-        );
-
-      if(!b&&!e){
-        return;
-      }
-
-      tB+=b;
-      tE+=e;
-
-      rows+=[
-        c,
-        b,
-        e,
-        b-e
-      ].join(',')+'\n';
+      const b=S.budget.filter(x=>x.category===c).reduce((a,x)=>a+(+x.amount||0),0);
+      const e=S.expenses.filter(x=>x.category===c).reduce((a,x)=>a+(+x.amount||0),0);
+      if(!b&&!e)return; tB+=b;tE+=e;
+      rows+=[c,b,e,b-e].join(',')+'\n';
     });
-
-    downloadFile(
-      '정산표_'+fileSafe(S.meta.title)+'.csv',
-
-      BOM
-      +'분류,예산,지출,잔액\n'
-      +rows
-      +[
-        '합계',
-        tB,
-        tE,
-        tB-tE
-      ].join(','),
-
-      'text/csv;charset=utf-8'
-    );
+    downloadFile('정산표_'+fileSafe(S.meta.title)+'.csv',BOM+'분류,예산,지출,잔액\n'+rows+['합계',tB,tE,tB-tE].join(','),'text/csv;charset=utf-8');
   }
-
-  toast(
-    'CSV가 다운로드되었습니다 (엑셀에서 열기)'
-  );
+  toast('CSV가 다운로드되었습니다 (엑셀에서 열기)');
 };
-
 window.exportReceipts=()=>{
-  const has=S.expenses.filter(
-    e=>e.receipt
-  );
-
-  if(!has.length){
-    toast('첨부된 영수증이 없습니다');
-    return;
-  }
-
+  const has=S.expenses.filter(e=>e.receipt);
+  if(!has.length){toast('첨부된 영수증이 없습니다');return;}
   has.forEach((e,i)=>{
     setTimeout(()=>{
       const a=document.createElement('a');
-
       a.href=e.receipt;
-
-      a.download=
-        `영수증_${e.date||''}_${(e.desc||'').slice(0,10)}.jpg`;
-
+      a.download=`영수증_${e.date||''}_${(e.desc||'').slice(0,10)}.jpg`;
       a.click();
     },i*350);
   });
-
-  toast(
-    `영수증 ${has.length}장 저장 중…`
-  );
+  toast(`영수증 ${has.length}장 저장 중…`);
 };
 
+/* ── 제목 편집 ── */
 function renderHeader(){
   $('hdLabel').textContent=S.meta.label;
-
-  $('hdTitle').innerHTML=
-    esc(S.meta.title)
-    +' <button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집">'
-    +'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'
-    +'<path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>'
-    +'</svg>'
-    +'</button>';
-
+  $('hdTitle').innerHTML=esc(S.meta.title)+' <button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button>';
   $('hdSub').textContent=S.meta.sub;
-
-  $('printTitle').textContent=
-    S.meta.title
-    +(S.meta.sub?' · '+S.meta.sub:'');
-
-  document.title=BROWSER_TITLE;
+  $('printTitle').textContent=S.meta.title+(S.meta.sub?' · '+S.meta.sub:'');
+  document.title='POD CHURCH ACCOUNTING PROGRAM';
 }
-
 window.openMetaModal=()=>{
   $('metaLabel').value=S.meta.label;
   $('metaTitle').value=S.meta.title;
   $('metaSub').value=S.meta.sub;
-
   openModal('metaModal');
 };
-
 window.saveMeta=async()=>{
   const title=$('metaTitle').value.trim();
-
-  if(!title){
-    toast('제목을 입력해주세요');
-    return;
-  }
-
-  S.meta={
-    label:$('metaLabel').value.trim(),
-    title,
-    sub:$('metaSub').value.trim()
-  };
-
+  if(!title){toast('제목을 입력해주세요');return;}
+  S.meta={label:$('metaLabel').value.trim(),title,sub:$('metaSub').value.trim()};
   try{
-    await setDoc(
-      settingsRef(),
-      {
-        label:S.meta.label,
-        title:S.meta.title,
-        sub:S.meta.sub
-      },
-      {merge:true}
-    );
-
-    renderHeader();
-    closeModal('metaModal');
-
-    toast(
-      '제목이 변경되었습니다 (팀 전체 반영)'
-    );
-  }catch(e){
-    toast(
-      '저장 실패 — 네트워크를 확인해주세요'
-    );
-  }
+    await setDoc(settingsRef(),{label:S.meta.label,title:S.meta.title,sub:S.meta.sub},{merge:true});
+    renderHeader(); closeModal('metaModal'); toast('제목이 변경되었습니다 (팀 전체 반영)');
+  }catch(e){ toast('저장 실패 — 네트워크를 확인해주세요'); }
 };
 
+/* ── 분류 관리 ── */
 async function saveCats(){
-  try{
-    await setDoc(
-      settingsRef(),
-      {cats:S.cats},
-      {merge:true}
-    );
-  }catch(e){
-    toast(
-      '저장 실패 — 네트워크를 확인해주세요'
-    );
-  }
+  try{ await setDoc(settingsRef(),{cats:S.cats},{merge:true}); }
+  catch(e){ toast('저장 실패 — 네트워크를 확인해주세요'); }
 }
-
 function catUsage(cat){
-  return S.budget
-    .filter(x=>x.category===cat).length
-
-    +S.expenses
-      .filter(x=>x.category===cat).length
-
-    +S.checklist
-      .filter(x=>x.category===cat).length;
+  return S.budget.filter(x=>x.category===cat).length
+       + S.expenses.filter(x=>x.category===cat).length
+       + S.checklist.filter(x=>x.category===cat).length;
 }
+window.openCatModal=()=>{ renderCatList(); openModal('catModal'); };
+const upSvg='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 6-6 6 6"/></svg>';
+const dnSvg='<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 6 6 6-6"/></svg>';
+function renderCatList(){
+  $('catList').innerHTML=S.cats.map((c,i)=>`
+    <div class="item">
+      <div style="display:flex;flex-direction:column;gap:2px;flex-shrink:0">
+        <button class="btn ghost sm" style="padding:3px 8px;${i===0?'opacity:.25;pointer-events:none':''}" onclick="moveCat(${i},-1)">${upSvg}</button>
+        <button class="btn ghost sm" style="padding:3px 8px;${i===S.cats.length-1?'opacity:.25;pointer-events:none':''}" onclick="moveCat(${i},1)">${dnSvg}</button>
+      </div>
+      <div class="grow"><div class="t1">${chip(c)} <span style="font-size:12px;color:var(--muted);font-weight:600">${catUsage(c)?catUsage(c)+'개 항목 사용 중':''}</span></div></div>
+      <button title="색상 선택" aria-label="${esc(c)} 색상 선택" onclick="openColorPicker(${i})" style="width:32px;height:32px;border-radius:50%;border:3px solid ${CHIP_PAL[chipIdx(c)].bg};box-shadow:0 0 0 1px var(--line);background:${CHIP_PAL[chipIdx(c)].fg};cursor:pointer;flex-shrink:0"></button>
+      <button class="btn ghost sm" onclick="renameCat(${i})">이름 변경</button>
+      <button class="btn ghost sm" style="color:var(--danger)" onclick="deleteCat(${i})">삭제</button>
+    </div>`).join('');
+}
+let colorPickerCatIndex=null;
 
-window.openCatModal=()=>{
-  renderCatList();
-  openModal('catModal');
+window.openColorPicker=i=>{
+  colorPickerCatIndex=i;
+  renderColorPicker();
+  openModal('colorModal');
 };
 
-function renderCatList(){
-  $('catList').innerHTML=
-    S.cats.map((c,i)=>{
-      const p=CHIP_PAL[chipIdx(c)];
-
-      return `
-        <div class="item">
-          <div
-            style="
-              display:flex;
-              flex-direction:column;
-              gap:2px;
-              flex-shrink:0
-            "
-          >
-            <button
-              class="btn ghost sm"
-              style="
-                padding:3px 8px;
-                ${i===0?'opacity:.25;pointer-events:none':''}
-              "
-              onclick="moveCat(${i},-1)"
-            >
-              ↑
-            </button>
-
-            <button
-              class="btn ghost sm"
-              style="
-                padding:3px 8px;
-                ${
-                  i===S.cats.length-1
-                    ? 'opacity:.25;pointer-events:none'
-                    : ''
-                }
-              "
-              onclick="moveCat(${i},1)"
-            >
-              ↓
-            </button>
-          </div>
-
-          <div class="grow">
-            <div class="t1">
-              ${chip(c)}
-
-              <span
-                style="
-                  font-size:12px;
-                  color:var(--muted);
-                  font-weight:600
-                "
-              >
-                ${
-                  catUsage(c)
-                    ? catUsage(c)+'개 항목 사용 중'
-                    : ''
-                }
-              </span>
-            </div>
-          </div>
-
-          <button
-            title="색상 변경"
-            onclick="cycleColor(${i})"
-            style="
-              width:26px;
-              height:26px;
-              border-radius:50%;
-              border:2px solid var(--line);
-              background:${p.fg};
-              cursor:pointer;
-              flex-shrink:0
-            "
-          ></button>
-
-          <button
-            class="btn ghost sm"
-            onclick="renameCat(${i})"
-          >
-            이름 변경
-          </button>
-
-          <button
-            class="btn ghost sm"
-            style="color:var(--danger)"
-            onclick="deleteCat(${i})"
-          >
-            삭제
-          </button>
-        </div>
-      `;
-    }).join('');
+function renderColorPicker(){
+  if(colorPickerCatIndex===null||!S.cats[colorPickerCatIndex])return;
+  const cat=S.cats[colorPickerCatIndex];
+  const current=chipIdx(cat);
+  $('colorPickerSub').textContent=`'${cat}'에 적용할 색상을 선택하세요.`;
+  $('colorPickerGrid').innerHTML=CHIP_PAL.map((p,i)=>`
+    <button class="color-choice ${i===current?'on':''}" onclick="selectCatColor(${i})" aria-label="색상 ${i+1}">
+      <span class="swatch" style="background:${p.fg};box-shadow:0 0 0 8px ${p.bg}"></span>
+      <span class="check">✓</span>
+    </button>`).join('');
 }
 
-window.cycleColor=async i=>{
-  const c=S.cats[i];
-
-  S.catColors[c]=
-    (chipIdx(c)+1)%CHIP_PAL.length;
-
-  try{
-    await setDoc(
-      settingsRef(),
-      {catColors:S.catColors},
-      {merge:true}
-    );
-  }catch(e){
-    toast(
-      '저장 실패 — 네트워크를 확인해주세요'
-    );
-  }
-
+window.selectCatColor=async paletteIndex=>{
+  if(colorPickerCatIndex===null||!S.cats[colorPickerCatIndex])return;
+  const cat=S.cats[colorPickerCatIndex];
+  const previous=S.catColors[cat];
+  S.catColors[cat]=paletteIndex;
   renderCatList();
   renderAll();
+  renderColorPicker();
+  try{
+    await setDoc(settingsRef(),{catColors:S.catColors},{merge:true});
+    closeModal('colorModal');
+    toast(`'${cat}' 색상이 변경되었습니다`);
+  }catch(e){
+    if(previous===undefined) delete S.catColors[cat];
+    else S.catColors[cat]=previous;
+    renderCatList();
+    renderAll();
+    renderColorPicker();
+    toast('저장 실패 — 네트워크를 확인해주세요');
+  }
 };
-
 window.moveCat=async(i,dir)=>{
   const j=i+dir;
-
-  if(j<0||j>=S.cats.length){
-    return;
-  }
-
-  [
-    S.cats[i],
-    S.cats[j]
-  ]=[
-    S.cats[j],
-    S.cats[i]
-  ];
-
-  await saveCats();
-
-  renderCatList();
-  renderAll();
+  if(j<0||j>=S.cats.length)return;
+  [S.cats[i],S.cats[j]]=[S.cats[j],S.cats[i]];
+  await saveCats(); renderCatList(); renderAll();
 };
-
 window.addCat=async()=>{
   const n=$('newCatName').value.trim();
-
-  if(!n){
-    toast('분류 이름을 입력해주세요');
-    return;
-  }
-
-  if(S.cats.includes(n)){
-    toast('이미 있는 분류입니다');
-    return;
-  }
-
-  S.cats.push(n);
-  $('newCatName').value='';
-
-  await saveCats();
-
-  renderCatList();
-  renderAll();
-
-  toast(`'${n}' 분류가 추가되었습니다`);
+  if(!n){toast('분류 이름을 입력해주세요');return;}
+  if(S.cats.includes(n)){toast('이미 있는 분류입니다');return;}
+  S.cats.push(n); $('newCatName').value='';
+  await saveCats(); renderCatList(); renderAll(); toast(`'${n}' 분류가 추가되었습니다`);
 };
-
 window.renameCat=async i=>{
   const old=S.cats[i];
-
-  const n=prompt(
-    `'${old}' 분류의 새 이름을 입력하세요`,
-    old
-  );
-
-  if(n===null){
-    return;
-  }
-
+  const n=prompt(`'${old}' 분류의 새 이름을 입력하세요`,old);
+  if(n===null)return;
   const name=n.trim();
-
-  if(!name||name===old){
-    return;
-  }
-
-  if(S.cats.includes(name)){
-    toast('이미 있는 분류입니다');
-    return;
-  }
-
+  if(!name||name===old)return;
+  if(S.cats.includes(name)){toast('이미 있는 분류입니다');return;}
   S.cats[i]=name;
-
   if(S.catColors[old]!==undefined){
-    S.catColors[name]=S.catColors[old];
-    delete S.catColors[old];
-
-    try{
-      await setDoc(
-        settingsRef(),
-        {catColors:S.catColors},
-        {merge:true}
-      );
-    }catch(e){}
+    S.catColors[name]=S.catColors[old]; delete S.catColors[old];
+    try{ await setDoc(settingsRef(),{catColors:S.catColors},{merge:false}); }catch(e){}
   }
-
   await saveCats();
-
+  // 이 분류를 쓰던 모든 항목의 분류를 일괄 변경
   try{
-    const groups=[
-      ['budget',S.budget],
-      ['expenses',S.expenses],
-      ['checklist',S.checklist]
-    ];
-
-    for(const [colName,list] of groups){
-      for(
-        const item of list.filter(
-          x=>x.category===old
-        )
-      ){
-        const{
-          id,
-          ...rest
-        }=item;
-
-        await setDoc(
-          doc(col(colName),id),
-          {
-            ...rest,
-            category:name
-          }
-        );
+    for(const [colName,list] of [['budget',S.budget],['expenses',S.expenses],['checklist',S.checklist]]){
+      for(const item of list.filter(x=>x.category===old)){
+        const {id,...rest}=item;
+        await setDoc(doc(col(colName),id),{...rest,category:name});
       }
     }
-
-    toast(
-      `'${old}' → '${name}' 변경 완료`
-    );
-  }catch(e){
-    toast(
-      '일부 항목 변경 실패 — 다시 시도해주세요'
-    );
-  }
-
-  renderCatList();
-  renderAll();
+    toast(`'${old}' → '${name}' 변경 완료`);
+  }catch(e){ toast('일부 항목 변경 실패 — 다시 시도해주세요'); }
+  renderCatList(); renderAll();
 };
-
 window.deleteCat=async i=>{
   const c=S.cats[i];
   const used=catUsage(c);
-
-  if(used){
-    alert(
-      `'${c}' 분류를 쓰는 항목이 ${used}개 있습니다.\n`
-      +'해당 항목들의 분류를 먼저 바꾸거나 이름 변경을 사용하세요.'
-    );
-
-    return;
-  }
-
-  if(S.cats.length<=1){
-    toast('분류는 최소 1개 필요합니다');
-    return;
-  }
-
-  if(!confirm(`'${c}' 분류를 삭제할까요?`)){
-    return;
-  }
-
+  if(used){ alert(`'${c}' 분류를 쓰는 항목이 ${used}개 있습니다.\n해당 항목들의 분류를 먼저 바꾸거나, '이름 변경'을 사용하세요.`); return; }
+  if(S.cats.length<=1){ toast('분류는 최소 1개 필요합니다'); return; }
+  if(!confirm(`'${c}' 분류를 삭제할까요?`))return;
   delete S.catColors[c];
   S.cats.splice(i,1);
-
   await saveCats();
-
-  try{
-    await setDoc(
-      settingsRef(),
-      {catColors:S.catColors},
-      {merge:true}
-    );
-  }catch(e){}
-
-  renderCatList();
-  renderAll();
-
-  toast('삭제되었습니다');
+  try{ await setDoc(settingsRef(),{catColors:S.catColors},{merge:true}); }catch(e){}
+  renderCatList(); renderAll(); toast('삭제되었습니다');
 };
 
+/* ── 토스트 ── */
 let toastTimer;
-
 window.toast=msg=>{
-  const t=$('toast');
-
-  t.textContent=msg;
-  t.classList.add('on');
-
-  clearTimeout(toastTimer);
-
-  toastTimer=setTimeout(()=>{
-    t.classList.remove('on');
-  },2200);
+  const t=$('toast'); t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('on'),2200);
 };
 
 boot();
 </script>
-
 </body>
 </html>
