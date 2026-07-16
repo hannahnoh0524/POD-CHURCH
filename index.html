@@ -936,6 +936,40 @@ body.workspace-ready > nav{
 .event-manage-actions{display:flex;gap:6px}
 .event-manage-actions button{padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:11px;font-weight:800;cursor:pointer}
 
+
+/* ── 플랫폼 전체 관리자 지정 ── */
+.member-role-stack{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px;
+}
+.global-admin-badge{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 8px;
+  border-radius:999px;
+  background:var(--green-soft);
+  color:var(--green-dark);
+  font-size:10px;
+  font-weight:900;
+}
+.global-admin-button{
+  padding:7px 9px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--card);
+  color:var(--ink);
+  font-size:10px;
+  font-weight:850;
+  cursor:pointer;
+}
+.global-admin-button.on{
+  border-color:var(--green);
+  background:var(--green-soft);
+  color:var(--green-dark);
+}
+
 </style>
 </head>
 <body>
@@ -1550,7 +1584,7 @@ let editingExp=null,editingBg=null,editingCk=null,pendingReceipt=null;
 let ckFilterVal='전체';
 let pendingExcelImport=null;
 let homeDoneOpen=false;
-let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='editor',members=[],auditLogs=[],workspaceOptions=[],isGlobalAdmin=false,unsubs=[];
+let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='editor',members=[],auditLogs=[],workspaceOptions=[],globalAdminUids=[],isGlobalAdmin=false,unsubs=[];
 const col=name=>collection(db,'workspaces',currentWorkspace,name);
 const settingsRef=()=>doc(db,'workspaces',currentWorkspace,'meta','settings');
 const workspaceRef=()=>doc(db,'workspaces',currentWorkspace);
@@ -1651,8 +1685,44 @@ function bindSnapshots(){
 }
 function bindAdmin(){
   if(unsubs.some(x=>x._adminBound))return;
-  let u=onSnapshot(col('members'),snap=>{members=snap.docs.map(d=>({uid:d.id,...d.data()}));renderMembers()});u._adminBound=true;unsubs.push(u);
-  const q=query(col('auditLogs'),orderBy('createdAt','desc'),limit(50));let l=onSnapshot(q,snap=>{auditLogs=snap.docs.map(d=>({id:d.id,...d.data()}));renderLogs()});l._adminBound=true;unsubs.push(l);
+
+  let u=onSnapshot(
+    col('members'),
+    snap=>{
+      members=snap.docs.map(d=>({uid:d.id,...d.data()}));
+      renderMembers();
+    },
+    e=>console.error('참여자 목록 오류:',e)
+  );
+  u._adminBound=true;
+  unsubs.push(u);
+
+  const q=query(col('auditLogs'),orderBy('createdAt','desc'),limit(50));
+  let l=onSnapshot(
+    q,
+    snap=>{
+      auditLogs=snap.docs.map(d=>({id:d.id,...d.data()}));
+      renderLogs();
+    },
+    e=>console.error('로그 목록 오류:',e)
+  );
+  l._adminBound=true;
+  unsubs.push(l);
+
+  if(isGlobalAdmin){
+    let g=onSnapshot(
+      collection(db,'globalAdmins'),
+      snap=>{
+        globalAdminUids=snap.docs
+          .filter(d=>d.data()?.active===true)
+          .map(d=>d.id);
+        renderMembers();
+      },
+      e=>console.error('전체 관리자 목록 오류:',e)
+    );
+    g._adminBound=true;
+    unsubs.push(g);
+  }
 }
 function setSync(ok,err){
   const b=$('syncBadge');
@@ -2020,44 +2090,73 @@ window.joinSwitch=async()=>{
   }
 };
 function renderMembers(){
-  if(!$('memberList'))return;
-  const sorted=[...members].sort((a,b)=>{
-    if(a.role==='pending'&&b.role!=='pending')return -1;
-    if(a.role!=='pending'&&b.role==='pending')return 1;
-    return (a.displayName||'').localeCompare(b.displayName||'','ko');
-  });
+  if(!$('memberList')) return;
 
-  $('memberList').innerHTML=sorted.map(m=>{
-    const self=m.uid===currentUid;
-    const pending=m.role==='pending';
+  const sorted=[...members].sort((a,b)=>
+    (a.displayName||'').localeCompare(b.displayName||'','ko')
+  );
 
-    const userPalette=CHIP_PAL[userColorIndex(m)];
+  $('memberList').innerHTML=sorted.map(member=>{
+    const self=member.uid===currentUid;
+    const isPlatformAdmin=globalAdminUids.includes(member.uid);
+    const userPalette=CHIP_PAL[userColorIndex(member)];
+
     return `<div class="member-row">
       <div class="member-main">
-        ${userChip(m.displayName||'이름 미설정',m)}
-        <small>${pending?'편집자 중':roleLabel(m.role)}${self?' · 나':''}</small>
+        ${userChip(member.displayName||'이름 미설정',member)}
+        <small>
+          이벤트 ${roleLabel(member.role)}
+          ${self?' · 나':''}
+          ${isPlatformAdmin?' · 전체 관리자':''}
+        </small>
       </div>
 
       <button
         type="button"
         class="user-color-btn"
         title="사용자 팁 색상 선택"
-        aria-label="${esc(m.displayName||'사용자')} 팁 색상 선택"
-        onclick="openUserColorPicker('${m.uid}')"
+        aria-label="${esc(member.displayName||'사용자')} 팁 색상 선택"
+        onclick="openUserColorPicker('${member.uid}')"
         style="border:3px solid ${userPalette.bg};background:${userPalette.fg}"
       ></button>
 
-      ${pending&&!self
-        ? `<div class="pending-actions">
-            <button class="approve" onclick="changeMemberRole('${m.uid}','editor')">승인</button>
-            <button class="reject" onclick="removePendingMember('${m.uid}')">거절</button>
-          </div>`
-        : `<select class="member-role-select" onchange="changeMemberRole('${m.uid}',this.value)" ${self?'disabled':''}>
-            ${['viewer','editor','admin'].map(r=>`<option value="${r}" ${m.role===r?'selected':''}>${roleLabel(r)}</option>`).join('')}
-          </select>`
-      }
+      <div class="member-role-stack">
+        <select
+          class="member-role-select"
+          onchange="changeMemberRole('${member.uid}',this.value)"
+          ${self?'disabled':''}
+        >
+          ${['viewer','editor','admin'].map(role=>`
+            <option value="${role}" ${member.role===role?'selected':''}>
+              ${roleLabel(role)}
+            </option>
+          `).join('')}
+        </select>
+
+        ${isGlobalAdmin
+          ? '<span class="global-admin-badge">전체 관리자</span>'
+          : ''
+        }
+
+        ${isGlobalAdmin
+          ? ''
+          : ''
+        }
+
+        ${isGlobalAdmin
+          ? `<button
+              type="button"
+              class="global-admin-button ${isPlatformAdmin?'on':''}"
+              onclick="toggleGlobalAdmin('${member.uid}')"
+              ${self&&isPlatformAdmin?'disabled title="자기 자신의 전체 관리자 권한은 해제할 수 없습니다"':''}
+            >
+              ${isPlatformAdmin?'전체 관리자 해제':'전체 관리자 지정'}
+            </button>`
+          : ''
+        }
+      </div>
     </div>`;
-  }).join('')||'<div class="empty">참여자가 없습니다.</div>';
+  }).join('') || '<div class="empty">참여자가 없습니다.</div>';
 }
 
 window.removePendingMember=async uidValue=>{
@@ -2067,6 +2166,71 @@ window.removePendingMember=async uidValue=>{
   await deleteDoc(doc(db,'workspaces',currentWorkspace,'members',uidValue));
   await writeLog('참여 요청 거절','member',uidValue,{role:'editor'},null);
   toast('참여 요청을 거절했습니다');
+};
+
+
+window.toggleGlobalAdmin=async uidValue=>{
+  if(!isGlobalAdmin){
+    toast('전체 관리자만 이 권한을 변경할 수 있습니다');
+    return;
+  }
+
+  const member=members.find(item=>item.uid===uidValue);
+  if(!member){
+    toast('사용자 정보를 찾을 수 없습니다');
+    return;
+  }
+
+  const currentlyAdmin=globalAdminUids.includes(uidValue);
+
+  if(currentlyAdmin && uidValue===currentUid){
+    toast('자기 자신의 전체 관리자 권한은 해제할 수 없습니다');
+    return;
+  }
+
+  const message=currentlyAdmin
+    ? `${member.displayName||'사용자'}의 전체 관리자 권한을 해제할까요?`
+    : `${member.displayName||'사용자'}를 전체 관리자로 지정할까요?`;
+
+  if(!confirm(message)) return;
+
+  try{
+    const ref=doc(db,'globalAdmins',uidValue);
+
+    if(currentlyAdmin){
+      await deleteDoc(ref);
+      globalAdminUids=globalAdminUids.filter(uid=>uid!==uidValue);
+      await writeLog(
+        '전체 관리자 해제',
+        'member',
+        uidValue,
+        {globalAdmin:true},
+        {globalAdmin:false}
+      );
+      toast(`${member.displayName||'사용자'}의 전체 관리자 권한을 해제했습니다`);
+    }else{
+      await setDoc(ref,{
+        active:true,
+        name:member.displayName||'',
+        grantedBy:currentUid,
+        grantedAt:serverTimestamp()
+      });
+      if(!globalAdminUids.includes(uidValue)) globalAdminUids.push(uidValue);
+      await writeLog(
+        '전체 관리자 지정',
+        'member',
+        uidValue,
+        {globalAdmin:false},
+        {globalAdmin:true}
+      );
+      toast(`${member.displayName||'사용자'}를 전체 관리자로 지정했습니다`);
+    }
+
+    renderMembers();
+  }catch(e){
+    console.error(e);
+    toast('전체 관리자 권한 변경에 실패했습니다');
+  }
 };
 
 window.changeMemberRole=async(u,r)=>{if(!canAdmin())return;const m=members.find(x=>x.uid===u),old=m?.role;await setDoc(doc(db,'workspaces',currentWorkspace,'members',u),{role:r,updatedAt:serverTimestamp(),updatedBy:currentUid},{merge:true});await writeLog('권한 변경','member',u,{role:old},{role:r});toast('권한을 변경했습니다')};
