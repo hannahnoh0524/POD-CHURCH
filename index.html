@@ -944,6 +944,21 @@ body.workspace-ready > nav{
   display:block!important;
 }
 
+
+/* ── 이벤트 관리·로그아웃 ── */
+.event-manage-list{display:grid;gap:9px;margin-top:10px}
+.event-manage-card{
+  display:flex;align-items:center;gap:10px;padding:13px;
+  border:1px solid var(--line);border-radius:13px;background:var(--black-soft)
+}
+.event-manage-main{flex:1;min-width:0}
+.event-manage-main strong{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.event-manage-main small{display:block;margin-top:3px;color:var(--muted);font-size:11px}
+.event-current{display:inline-flex;padding:3px 7px;border-radius:999px;background:var(--green-soft);color:var(--green-dark);font-size:10px;font-weight:900}
+.event-manage-actions{display:flex;gap:6px}
+.event-manage-actions button{padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font-size:11px;font-weight:800;cursor:pointer}
+.logout-button{color:var(--danger)!important}
+
 </style>
 </head>
 <body>
@@ -1323,8 +1338,10 @@ body.workspace-ready > nav{
     <div class="account-menu" id="accountMenu">
       <button type="button" onclick="openAccountPanel('profile')"><span>사용자 이름 변경</span><span>›</span></button>
       <button type="button" onclick="openAccountPanel('event')"><span>다른 이벤트 참여·전환</span><span>›</span></button>
+      <button type="button" id="eventManageMenuButton" onclick="openAccountPanel('events')" style="display:none"><span>이벤트 관리</span><span>›</span></button>
       <button type="button" id="importMenuButton" onclick="openAccountPanel('import')"><span>엑셀 데이터 가져오기</span><span>›</span></button>
       <button type="button" id="adminMenuButton" onclick="openAccountPanel('admin')" style="display:none"><span>사용자 및 권한 관리</span><span>›</span></button>
+      <button type="button" class="logout-button" onclick="logoutApp()"><span>로그아웃</span><span>›</span></button>
     </div>
 
     <div class="account-panel" id="profilePanel">
@@ -1344,6 +1361,12 @@ body.workspace-ready > nav{
       <div class="identity-note">처음 참여하는 이벤트라면 관리자 승인 대기 상태로 등록됩니다.</div>
     </div>
 
+
+    <div class="account-panel" id="eventsPanel">
+      <div class="panel-head"><h4>이벤트 관리</h4><button class="panel-back" onclick="openAccountPanel('menu')">뒤로</button></div>
+      <button class="btn pri" id="createEventFromSettingsBtn" style="width:100%" onclick="openCreateEventFromSettings()">＋ 새 이벤트 만들기</button>
+      <div class="event-manage-list" id="eventManageList"></div>
+    </div>
 
     <div class="account-panel" id="importPanel">
       <div class="panel-head"><h4>엑셀 데이터 가져오기</h4><button class="panel-back" onclick="openAccountPanel('menu')">뒤로</button></div>
@@ -1424,7 +1447,7 @@ const firebaseConfig = {
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, getDoc, getDocs, runTransaction, serverTimestamp, query, orderBy, limit, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth, signInAnonymously, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const DEFAULT_WORKSPACE='EVENT2026';
 const USER_KEY='pod_v2_user_name', WORKSPACE_KEY='pod_v2_workspace';
@@ -1895,13 +1918,15 @@ window.openAccountModal=async()=>{
   if(!currentWorkspace){$('identityOverlay').classList.add('on');return}
   openAccountPanel('menu');
   renderAccountUI();
+  renderEventManageList();
   openModal('accountModal');
 };
 
 window.openAccountPanel=panel=>{
   accountPanel=panel;
+  if(panel==='events') renderEventManageList();
   $('accountMenu').style.display=panel==='menu'?'grid':'none';
-  ['profile','event','import','admin'].forEach(name=>{
+  ['profile','event','events','import','admin'].forEach(name=>{
     $(name+'Panel').classList.toggle('on',panel===name);
   });
   $('nonAdminArea').style.display=panel==='menu'&&!canAdmin()?'block':'none';
@@ -1936,6 +1961,7 @@ function renderAccountUI(){
   b.textContent=roleLabel(currentRole);
 
   $('adminMenuButton').style.display=canAdmin()?'flex':'none';
+  $('eventManageMenuButton').style.display=isGlobalAdmin?'flex':'none';
   $('importMenuButton').style.display=canEdit()?'flex':'none';
   $('nonAdminArea').style.display=accountPanel==='menu'&&!canAdmin()?'block':'none';
 
@@ -1945,6 +1971,56 @@ function renderAccountUI(){
 
   if(canAdmin()){renderMembers();renderLogs()}
 }
+
+
+function renderEventManageList(){
+  if(!$('eventManageList')) return;
+  if(!workspaceOptions.length){
+    $('eventManageList').innerHTML='<div class="empty">생성된 이벤트가 없습니다.</div>';
+    return;
+  }
+
+  $('eventManageList').innerHTML=workspaceOptions.map(w=>`
+    <div class="event-manage-card">
+      <div class="event-manage-main">
+        <strong>${esc(w.name||w.id)}</strong>
+        <small>${esc(w.id)} ${w.id===currentWorkspace?'<span class="event-current">현재 이벤트</span>':''}</small>
+      </div>
+      <div class="event-manage-actions">
+        ${w.id===currentWorkspace?'':`<button onclick="switchManagedEvent('${w.id}')">전환</button>`}
+      </div>
+    </div>
+  `).join('');
+}
+
+window.openCreateEventFromSettings=()=>{
+  if(!isGlobalAdmin){toast('전체 관리자만 새 이벤트를 만들 수 있습니다');return;}
+  closeModal('accountModal');
+  $('identityOverlay').classList.add('on');
+  $('identityName').value=localName();
+  setIdentityMode('create');
+};
+
+window.switchManagedEvent=async code=>{
+  closeModal('accountModal');
+  await enterWorkspace(code);
+  toast('이벤트를 전환했습니다');
+};
+
+window.logoutApp=async()=>{
+  if(!confirm('로그아웃할까요? 이 기기의 사용자 이름과 이벤트 선택 정보가 초기화됩니다.')) return;
+  try{
+    unsubs.forEach(fn=>{try{fn()}catch(e){}});
+    unsubs=[];
+    saveLocal(USER_KEY,'');
+    saveLocal(WORKSPACE_KEY,'');
+    await signOut(auth);
+    location.reload();
+  }catch(e){
+    console.error(e);
+    toast('로그아웃에 실패했습니다');
+  }
+};
 
 window.saveDisplayName=async()=>{const n=$('accountNameInput').value.trim();if(!n)return;const old=localName();saveLocal(USER_KEY,n);await setDoc(memberRef(),{displayName:n,updatedAt:serverTimestamp()},{merge:true});renderAccountUI();renderMyName();await writeLog('사용자 ID 변경','member',currentUid,{name:old},{name:n});toast('변경되었습니다')};
 window.joinSwitch=async()=>{
