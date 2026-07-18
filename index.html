@@ -970,6 +970,10 @@ body.workspace-ready > nav{
   color:var(--green-dark);
 }
 
+
+/* ── 첫 관리자 자동 등록 ── */
+#bootstrapAdminView.on{display:block!important}
+
 </style>
 </head>
 <body>
@@ -1278,7 +1282,35 @@ body.workspace-ready > nav{
       </div>
     </div>
 
-    <div id="joinIdentityView">
+    
+    <div id="bootstrapAdminView" style="display:none">
+      <h2>첫 관리자 등록</h2>
+      <div class="identity-desc">
+        아직 등록된 전체 관리자가 없습니다.<br>
+        이름과 관리자 등록코드가 확인되면 이 기기를 첫 관리자로 등록합니다.
+      </div>
+
+      <label class="fld">관리자 이름</label>
+      <input id="bootstrapAdminName" placeholder="이름을 입력하세요" autocomplete="name">
+
+      <label class="fld">관리자 등록코드</label>
+      <input
+        id="bootstrapAdminCode"
+        type="password"
+        placeholder="관리자 등록코드를 입력하세요"
+        autocomplete="off"
+      >
+
+      <button type="button" class="btn pri identity-primary" id="bootstrapAdminButton" onclick="registerFirstAdmin()">
+        첫 관리자 등록
+      </button>
+
+      <div class="identity-note">
+        UID는 화면에 표시하지 않으며 내부에서 자동으로 처리됩니다.
+      </div>
+    </div>
+
+<div id="joinIdentityView">
       <h2>이벤트 입장</h2>
       <div class="identity-desc">이름을 입력하고 이벤트를 선택해주세요.</div>
 
@@ -1584,7 +1616,7 @@ let editingExp=null,editingBg=null,editingCk=null,pendingReceipt=null;
 let ckFilterVal='전체';
 let pendingExcelImport=null;
 let homeDoneOpen=false;
-let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='editor',members=[],auditLogs=[],workspaceOptions=[],globalAdminUids=[],isGlobalAdmin=false,unsubs=[];
+let db=null,auth=null,currentUid='',currentWorkspace='',currentWorkspaceName='',currentRole='editor',members=[],auditLogs=[],workspaceOptions=[],globalAdminUids=[],isGlobalAdmin=false,isPlatformInitialized=false,unsubs=[];
 const col=name=>collection(db,'workspaces',currentWorkspace,name);
 const settingsRef=()=>doc(db,'workspaces',currentWorkspace,'meta','settings');
 const workspaceRef=()=>doc(db,'workspaces',currentWorkspace);
@@ -1615,6 +1647,13 @@ async function boot(){
 
     const credential=await signInAnonymously(auth);
     currentUid=credential.user.uid;
+
+    await loadPlatformBootstrapStatus();
+
+    if(!isPlatformInitialized){
+      setSync(true);
+      return;
+    }
 
     await loadGlobalAdminStatus();
     await loadWorkspaceOptions();
@@ -1739,6 +1778,123 @@ function renderMyName(){ $('myNameTag').innerHTML = '<svg viewBox="0 0 24 24" wi
 
 /* ── 사용자·이벤트·권한 ── */
 let identityMode='join',accountPanel='menu',adminView='members',logFilterValue='all';
+
+
+
+const FIRST_ADMIN_CODE_HASH='9f68197cec56cd3c0f1a1c2a8ae4b0cf70bf327a217a9db05c969098c1f6086f';
+
+async function sha256Hex(value){
+  const data=new TextEncoder().encode(value);
+  const digest=await crypto.subtle.digest('SHA-256',data);
+  return Array.from(new Uint8Array(digest))
+    .map(byte=>byte.toString(16).padStart(2,'0'))
+    .join('');
+}
+
+async function loadPlatformBootstrapStatus(){
+  try{
+    const snap=await getDoc(doc(db,'system','bootstrap'));
+    isPlatformInitialized=snap.exists()&&snap.data()?.initialized===true;
+  }catch(e){
+    console.error('플랫폼 초기화 상태 확인 실패:',e);
+    isPlatformInitialized=false;
+  }
+
+  $('bootstrapAdminView').classList.toggle('on',!isPlatformInitialized);
+  $('bootstrapAdminView').style.display=!isPlatformInitialized?'block':'none';
+  $('joinIdentityView').style.display=isPlatformInitialized?'block':'none';
+
+  if(!isPlatformInitialized){
+    $('bootstrapAdminName').value=localName();
+  }
+
+  return isPlatformInitialized;
+}
+
+window.registerFirstAdmin=async()=>{
+  const name=$('bootstrapAdminName').value.trim();
+  const registrationCode=$('bootstrapAdminCode').value.trim();
+
+  if(!name){
+    toast('관리자 이름을 입력해주세요');
+    return;
+  }
+
+  if(!registrationCode){
+    toast('관리자 등록코드를 입력해주세요');
+    return;
+  }
+
+  const submittedHash=await sha256Hex(registrationCode);
+
+  if(submittedHash!==FIRST_ADMIN_CODE_HASH){
+    toast('관리자 등록코드가 올바르지 않습니다');
+    $('bootstrapAdminCode').value='';
+    $('bootstrapAdminCode').focus();
+    return;
+  }
+
+  const button=$('bootstrapAdminButton');
+  button.disabled=true;
+  button.textContent='등록 중…';
+
+  try{
+    await runTransaction(db,async tx=>{
+      const bootstrapRef=doc(db,'system','bootstrap');
+      const adminRef=doc(db,'globalAdmins',currentUid);
+      const bootstrapSnap=await tx.get(bootstrapRef);
+
+      if(bootstrapSnap.exists()){
+        throw new Error('ALREADY_INITIALIZED');
+      }
+
+      tx.set(adminRef,{
+        active:true,
+        name,
+        registrationCodeHash:submittedHash,
+        createdAt:serverTimestamp(),
+        createdBy:currentUid
+      });
+
+      tx.set(bootstrapRef,{
+        initialized:true,
+        adminUid:currentUid,
+        adminName:name,
+        registrationCodeHash:submittedHash,
+        initializedAt:serverTimestamp()
+      });
+    });
+
+    saveLocal(USER_KEY,name);
+    isPlatformInitialized=true;
+    isGlobalAdmin=true;
+    globalAdminUids=[currentUid];
+
+    $('identityName').value=name;
+    $('bootstrapAdminCode').value='';
+    $('bootstrapAdminView').classList.remove('on');
+    $('bootstrapAdminView').style.display='none';
+    $('joinIdentityView').style.display='block';
+    $('adminCreateEntry').classList.add('on');
+    $('adminCreateEntry').style.display='block';
+
+    await loadWorkspaceOptions();
+    toast('첫 관리자로 등록되었습니다');
+  }catch(e){
+    console.error(e);
+
+    if(e.message==='ALREADY_INITIALIZED'){
+      await loadPlatformBootstrapStatus();
+      await loadGlobalAdminStatus();
+      toast('이미 첫 관리자가 등록되어 있습니다');
+    }else{
+      toast('첫 관리자 등록에 실패했습니다');
+    }
+  }finally{
+    button.disabled=false;
+    button.textContent='첫 관리자 등록';
+  }
+};
 
 async function loadGlobalAdminStatus(){
   isGlobalAdmin=false;
