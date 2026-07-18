@@ -478,13 +478,6 @@ nav button.on{color:var(--green)}
   white-space:nowrap;
   color:var(--ink);
 }
-
-.event-context .event-code-label{
-  color:var(--muted);
-  font-size:11px;
-  font-weight:700;
-}
-
 .event-context .event-code{
   padding:3px 7px;
   border:1px solid var(--line);
@@ -981,6 +974,17 @@ body.workspace-ready > nav{
 /* ── 첫 관리자 자동 등록 ── */
 #bootstrapAdminView.on{display:block!important}
 
+
+/* ── 개인 접속코드·사용자 초대 ── */
+.invite-box{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--black-soft);
+}
+.invite-box>strong{font-size:14px}
+.event-context .event-code-label{color:var(--muted);font-size:11px;font-weight:700}
+
 </style>
 </head>
 <body>
@@ -1319,10 +1323,13 @@ body.workspace-ready > nav{
 
 <div id="joinIdentityView">
       <h2>이벤트 입장</h2>
-      <div class="identity-desc">이름을 입력하고 이벤트를 선택해주세요.</div>
+      <div class="identity-desc">이름과 개인 접속코드를 입력하고 이벤트를 선택해주세요.</div>
 
       <label class="fld">사용자 이름</label>
       <input id="identityName" placeholder="이름을 입력하세요" autocomplete="name">
+
+      <label class="fld">개인 접속코드</label>
+      <input id="identityAccessCode" type="password" inputmode="numeric" maxlength="12" placeholder="관리자에게 받은 접속코드" autocomplete="one-time-code">
 
       <label class="fld">이벤트 선택</label>
       <select id="identityWorkspaceSelect">
@@ -1435,6 +1442,31 @@ body.workspace-ready > nav{
       </div>
 
       <div class="admin-view on" id="membersAdminView">
+        <div class="invite-box">
+          <strong>사용자 접속코드 발급</strong>
+          <div class="identity-desc" style="margin:4px 0 12px">사용자 이름과 개인 코드를 미리 등록해야 해당 사용자가 입장할 수 있습니다.</div>
+          <label class="fld">사용자 이름</label>
+          <input id="inviteName" type="text" placeholder="예: 노한나">
+          <div class="fld-row">
+            <div>
+              <label class="fld">개인 접속코드</label>
+              <input id="inviteCode" type="text" inputmode="numeric" maxlength="12" placeholder="예: 482731">
+            </div>
+            <div>
+              <label class="fld">이벤트 권한</label>
+              <select id="inviteRole">
+                <option value="editor">편집자</option>
+                <option value="viewer">보기 전용</option>
+                <option value="admin">관리자</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row" style="margin-top:10px">
+            <button type="button" class="btn ghost" onclick="generateInviteCode()">코드 자동 생성</button>
+            <button type="button" class="btn pri" onclick="createUserInvite()">접속코드 등록</button>
+          </div>
+        </div>
+        <div class="sec-title" style="margin-top:16px">현재 참여자</div>
         <div id="memberList"></div>
       </div>
 
@@ -1681,38 +1713,130 @@ async function boot(){
     toast('Firebase 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }
 }
-async function enterWorkspace(code){
-  unsubs.forEach(fn=>{try{fn()}catch(e){}});
-  unsubs=[];
 
+function normalizePersonName(value){
+  return (value||'').trim().replace(/\s+/g,' ').toLowerCase();
+}
+
+async function accessCredentialId(workspaceCode,name,personalCode){
+  return sha256Hex(`${normCode(workspaceCode)}|${normalizePersonName(name)}|${(personalCode||'').trim()}`);
+}
+
+window.generateInviteCode=()=>{
+  const code=String(Math.floor(100000+Math.random()*900000));
+  $('inviteCode').value=code;
+};
+
+window.createUserInvite=async()=>{
+  if(!canAdmin()){
+    toast('관리자만 접속코드를 발급할 수 있습니다');
+    return;
+  }
+
+  const displayName=$('inviteName').value.trim();
+  const personalCode=$('inviteCode').value.trim();
+  const role=$('inviteRole').value;
+
+  if(!displayName){toast('사용자 이름을 입력해주세요');return}
+  if(personalCode.length<4){toast('접속코드는 4자리 이상으로 입력해주세요');return}
+
+  try{
+    const inviteId=await accessCredentialId(currentWorkspace,displayName,personalCode);
+    await setDoc(doc(db,'workspaces',currentWorkspace,'invites',inviteId),{
+      displayName,
+      normalizedName:normalizePersonName(displayName),
+      role:['viewer','editor','admin'].includes(role)?role:'editor',
+      active:true,
+      claimedUid:null,
+      createdAt:serverTimestamp(),
+      createdBy:currentUid,
+      updatedAt:serverTimestamp()
+    });
+    await writeLog('접속코드 발급','member',inviteId,null,{displayName,role});
+    $('inviteName').value='';
+    $('inviteCode').value='';
+    toast(`${displayName}님의 접속코드를 등록했습니다`);
+  }catch(e){
+    console.error(e);
+    toast('접속코드 등록에 실패했습니다');
+  }
+};
+
+async function verifyPersonalAccess(workspaceCode,name,personalCode){
+  const inviteId=await accessCredentialId(workspaceCode,name,personalCode);
+  const inviteRef=doc(db,'workspaces',normCode(workspaceCode),'invites',inviteId);
+  const inviteSnap=await getDoc(inviteRef);
+
+  if(!inviteSnap.exists()) throw new Error('INVALID_ACCESS_CODE');
+  const invite=inviteSnap.data();
+
+  if(invite.active!==true || invite.normalizedName!==normalizePersonName(name)){
+    throw new Error('INVALID_ACCESS_CODE');
+  }
+  if(invite.claimedUid && invite.claimedUid!==currentUid){
+    throw new Error('ACCESS_CODE_ALREADY_USED');
+  }
+
+  return {inviteId,inviteRef,invite};
+}
+
+async function enterWorkspace(code,personalCode=''){
   currentWorkspace=normCode(code);
   if(!currentWorkspace) throw new Error('INVALID_WORKSPACE');
 
   const ws=await getDoc(workspaceRef());
   if(!ws.exists() || ws.data()?.active===false) throw new Error('NOT_FOUND');
-
   currentWorkspaceName=ws.data().name||currentWorkspace;
 
+  const name=localName();
   const ref=memberRef();
   let memberSnap=await getDoc(ref);
 
-  if(!memberSnap.exists()){
-    await setDoc(ref,{
-      displayName:localName(),
-      role:'editor',
-      joinedAt:serverTimestamp(),
-      updatedAt:serverTimestamp()
-    });
-    memberSnap=await getDoc(ref);
+  // 전체 관리자는 자신이 생성하거나 관리하는 이벤트에 개인 코드 없이 입장 가능
+  if(isGlobalAdmin){
+    if(!memberSnap.exists()){
+      await setDoc(ref,{
+        displayName:name,
+        normalizedName:normalizePersonName(name),
+        role:'admin',
+        accessVerified:true,
+        joinedAt:serverTimestamp(),
+        updatedAt:serverTimestamp()
+      });
+    }else{
+      await setDoc(ref,{displayName:name,normalizedName:normalizePersonName(name),updatedAt:serverTimestamp()},{merge:true});
+    }
   }else{
-    await setDoc(ref,{
-      displayName:localName(),
-      updatedAt:serverTimestamp()
-    },{merge:true});
-    memberSnap=await getDoc(ref);
+    if(!personalCode) throw new Error('ACCESS_CODE_REQUIRED');
+    const verified=await verifyPersonalAccess(currentWorkspace,name,personalCode);
+
+    await runTransaction(db,async tx=>{
+      const freshInvite=await tx.get(verified.inviteRef);
+      if(!freshInvite.exists()) throw new Error('INVALID_ACCESS_CODE');
+      const invite=freshInvite.data();
+      if(invite.active!==true || invite.normalizedName!==normalizePersonName(name)) throw new Error('INVALID_ACCESS_CODE');
+      if(invite.claimedUid && invite.claimedUid!==currentUid) throw new Error('ACCESS_CODE_ALREADY_USED');
+
+      tx.set(ref,{
+        displayName:name,
+        normalizedName:normalizePersonName(name),
+        role:invite.role||'editor',
+        accessVerified:true,
+        inviteId:verified.inviteId,
+        joinedAt:memberSnap.exists()?(memberSnap.data()?.joinedAt||serverTimestamp()):serverTimestamp(),
+        updatedAt:serverTimestamp()
+      },{merge:true});
+
+      tx.set(verified.inviteRef,{
+        claimedUid:currentUid,
+        claimedAt:serverTimestamp(),
+        updatedAt:serverTimestamp()
+      },{merge:true});
+    });
   }
 
-  currentRole=memberSnap.data()?.role||'editor';
+  memberSnap=await getDoc(ref);
+  currentRole=memberSnap.data()?.role||'viewer';
   saveLocal(WORKSPACE_KEY,currentWorkspace);
 
   bindSnapshots();
@@ -1721,6 +1845,7 @@ async function enterWorkspace(code){
 
   document.body.classList.add('workspace-ready');
   $('identityOverlay').classList.remove('on');
+  if($('identityAccessCode')) $('identityAccessCode').value='';
   setSync(true);
 }
 function bindSnapshots(){
@@ -2037,6 +2162,7 @@ window.submitIdentity=async()=>{
   const code=createMode
     ? normCode($('createIdentityCode').value)
     : $('identityWorkspaceSelect').value;
+  const personalCode=createMode?'':$('identityAccessCode').value.trim();
 
   if(!name){
     toast('이름을 입력해주세요');
@@ -2045,6 +2171,11 @@ window.submitIdentity=async()=>{
 
   if(!code){
     toast(createMode?'이벤트 코드를 입력해주세요':'이벤트를 선택해주세요');
+    return;
+  }
+
+  if(!createMode&&!isGlobalAdmin&&!personalCode){
+    toast('개인 접속코드를 입력해주세요');
     return;
   }
 
@@ -2106,7 +2237,7 @@ window.submitIdentity=async()=>{
       await loadWorkspaceOptions();
     }
 
-    await enterWorkspace(code);
+    await enterWorkspace(code,personalCode);
 
     try{
       await writeLog(
@@ -2128,6 +2259,9 @@ window.submitIdentity=async()=>{
       EVENT_NAME_REQUIRED:'이벤트 이름을 입력해주세요',
       NOT_FOUND:'선택한 이벤트를 찾을 수 없습니다',
       INVALID_WORKSPACE:'이벤트를 다시 선택해주세요',
+      ACCESS_CODE_REQUIRED:'개인 접속코드를 입력해주세요',
+      INVALID_ACCESS_CODE:'이름 또는 개인 접속코드가 올바르지 않습니다',
+      ACCESS_CODE_ALREADY_USED:'이미 다른 기기에서 사용된 접속코드입니다. 관리자에게 재발급을 요청해주세요',
       'permission-denied':'입장 권한이 없습니다. Firestore 규칙을 확인해주세요.'
     };
 
@@ -2235,7 +2369,28 @@ window.switchManagedEvent=async code=>{
 };
 
 
-window.saveDisplayName=async()=>{const n=$('accountNameInput').value.trim();if(!n)return;const old=localName();saveLocal(USER_KEY,n);await setDoc(memberRef(),{displayName:n,updatedAt:serverTimestamp()},{merge:true});renderAccountUI();renderMyName();await writeLog('사용자 ID 변경','member',currentUid,{name:old},{name:n});toast('변경되었습니다')};
+window.saveDisplayName=async()=>{
+  const n=$('accountNameInput').value.trim();
+  if(!n)return;
+
+  if(!isGlobalAdmin){
+    $('accountNameInput').value=localName();
+    toast('이름 변경은 관리자에게 새 접속코드 발급을 요청해주세요');
+    return;
+  }
+
+  const old=localName();
+  saveLocal(USER_KEY,n);
+  await setDoc(memberRef(),{
+    displayName:n,
+    normalizedName:normalizePersonName(n),
+    updatedAt:serverTimestamp()
+  },{merge:true});
+  renderAccountUI();
+  renderMyName();
+  await writeLog('사용자 이름 변경','member',currentUid,{name:old},{name:n});
+  toast('변경되었습니다');
+};
 window.joinSwitch=async()=>{
   const code=$('switchWorkspaceSelect').value;
   if(!code){
@@ -2243,14 +2398,14 @@ window.joinSwitch=async()=>{
     return;
   }
 
-  try{
-    closeModal('accountModal');
-    await enterWorkspace(code);
-    toast('이벤트를 전환했습니다');
-  }catch(e){
-    console.error(e);
-    toast('이벤트 전환에 실패했습니다');
-  }
+  closeModal('accountModal');
+  $('identityOverlay').classList.add('on');
+  setIdentityMode('join');
+  await loadWorkspaceOptions();
+  $('identityWorkspaceSelect').value=code;
+  $('identityAccessCode').value='';
+  $('identityAccessCode').focus();
+  toast('개인 접속코드를 입력해주세요');
 };
 function renderMembers(){
   if(!$('memberList')) return;
