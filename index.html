@@ -478,6 +478,13 @@ nav button.on{color:var(--green)}
   white-space:nowrap;
   color:var(--ink);
 }
+
+.event-context .event-code-label{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+}
+
 .event-context .event-code{
   padding:3px 7px;
   border:1px solid var(--line);
@@ -1009,7 +1016,7 @@ body.workspace-ready > nav{
   <div class="hd-title" id="hdTitle">POD CHURCH ACCOUNTING<button onclick="openMetaModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;vertical-align:1px;padding:2px" title="제목 편집"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></button></div>
   <div class="hd-sub" id="hdSub">POD CHURCH ACCOUNTING</div>
   <div class="event-context" id="eventContext" style="display:none">
-    <span class="event-name" id="eventContextName">-</span>
+    <span class="event-code-label">Event Code</span>
     <span class="event-code" id="eventContextCode">-</span>
   </div>
 </header>
@@ -2173,7 +2180,7 @@ function renderAccountUI(){
   $('accountNameInput').value=n;
 
   $('eventContext').style.display=currentWorkspace?'flex':'none';
-  $('eventContextName').textContent=currentWorkspaceName||currentWorkspace||'-';
+  if($('eventContextName')) $('eventContextName').textContent=currentWorkspaceName||currentWorkspace||'-';
   $('eventContextCode').textContent=currentWorkspace||'-';
 
   const b=$('accountRole');
