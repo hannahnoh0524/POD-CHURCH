@@ -1030,17 +1030,17 @@ body.workspace-ready > nav{
 <!-- ═══ 홈 ═══ -->
 <section class="tab on" id="tab-home">
   <div class="card">
-    <div class="sec-title">예산 현황 <small id="myNameTag" onclick="askMyName()" style="cursor:pointer"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>이름 설정</small></div>
+    <div class="sec-title">재원 및 예산 현황 <small id="myNameTag" onclick="askMyName()" style="cursor:pointer"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:3px"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>이름 설정</small></div>
     <div class="big-num" id="dashRemain">0<small>원 남음</small></div>
     <div class="lane">
       <div class="lane-track" id="laneTrack">
         <div class="lane-fill" id="laneFill"></div>
         <span class="lane-runner" id="laneRunner" aria-hidden="true">🏃</span>
       </div>
-      <div class="lane-meta"><span id="laneSpent">지출 0원</span><span id="lanePct">0%</span><span id="laneBudget">예산 0원</span></div>
+      <div class="lane-meta"><span id="laneSpent">지출 0원</span><span id="lanePct">0%</span><span id="laneBudget">재원 0원</span></div>
     </div>
     <div class="stat-row">
-      <div class="stat"><span>총 예산</span><b id="stBudget">0원</b></div>
+      <div class="stat"><span>총 재원</span><b id="stBudget">0원</b></div>
       <div class="stat orange"><span>총 지출</span><b id="stSpent">0원</b></div>
       <div class="stat" id="stRemainBox"><span>잔액</span><b id="stRemain">0원</b></div>
     </div>
@@ -1083,9 +1083,9 @@ body.workspace-ready > nav{
 <!-- ═══ 지출 ═══ -->
 <section class="tab" id="tab-money">
   <div class="card">
-    <div class="sec-title">예산안 <small id="budgetTotal">합계 0원</small></div>
+    <div class="sec-title">재원 및 지출 예산 <small id="budgetTotal">합계 0원</small></div>
     <div id="budgetList"></div>
-    <button class="btn ghost sm" style="width:100%;margin-top:10px" onclick="openBgModal()">＋ 예산 항목 추가</button>
+    <button class="btn ghost sm" style="width:100%;margin-top:10px" onclick="openBgModal()">＋ 재원·예산 항목 추가</button>
   </div>
   <div class="card">
     <div class="sec-title">지출 내역 <small id="expTotal">합계 0원</small></div>
@@ -1201,6 +1201,11 @@ body.workspace-ready > nav{
   <div class="modal">
     <button class="close-x" onclick="closeModal('bgModal')">✕</button>
     <h3 id="bgModalTitle">예산 항목</h3>
+    <label class="fld">항목 구분</label>
+    <select id="bgType">
+      <option value="expense">지출 예산</option>
+      <option value="funding">재원·수입</option>
+    </select>
     <label class="fld">분류 <a href="javascript:openCatModal()" style="float:right;color:var(--green);font-weight:700">편집</a></label>
     <div class="seg" id="bgCatSeg"></div>
     <label class="fld">항목명</label>
@@ -1329,7 +1334,7 @@ body.workspace-ready > nav{
       <input id="identityName" placeholder="이름을 입력하세요" autocomplete="name">
 
       <label class="fld">1회용 초대코드</label>
-      <input id="identityAccessCode" type="text" maxlength="20" placeholder="예: POD-7K4M-29QX" autocomplete="one-time-code" autocapitalize="characters">
+      <input id="identityAccessCode" type="text" maxlength="20" placeholder="발급받은 1회용 초대코드를 입력하세요" autocomplete="one-time-code" autocapitalize="characters">
 
       <label class="fld">이벤트 선택</label>
       <select id="identityWorkspaceSelect">
@@ -1451,8 +1456,7 @@ body.workspace-ready > nav{
           <select id="inviteRole">
             <option value="editor">편집자</option>
             <option value="viewer">보기 전용</option>
-            <option value="admin">관리자</option>
-          </select>
+                      </select>
           <button type="button" class="btn pri" style="width:100%;margin-top:10px" onclick="createUserInvite()">1회용 초대코드 생성</button>
           <div id="generatedInviteBox" style="display:none;margin-top:12px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--black-soft)">
             <div style="font-size:11px;color:var(--muted);font-weight:800">생성된 초대코드</div>
@@ -1660,7 +1664,8 @@ const saveLocal=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const normCode=v=>(v||'').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'').slice(0,32);
 const roleLabel=r=>({admin:'관리자',editor:'편집자',viewer:'열람자',pending:'편집자'})[r]||'편집자';
 const canEdit=()=>currentRole==='admin'||currentRole==='editor';
-const canAdmin=()=>currentRole==='admin';
+const canAdmin=()=>currentRole==='admin'||isGlobalAdmin;
+const canManageUsers=()=>isGlobalAdmin;
 function requireEdit(){if(canEdit())return true;toast(currentRole==='pending'?'관리자 승인 후 수정할 수 있습니다':'열람 권한에서는 수정할 수 없습니다');return false} 
 
 /* ── 초기화 ── */
@@ -1740,8 +1745,8 @@ window.copyGeneratedInvite=async()=>{
 };
 
 window.createUserInvite=async()=>{
-  if(!canAdmin()){
-    toast('관리자만 초대코드를 발급할 수 있습니다');
+  if(!canManageUsers()){
+    toast('전체 관리자만 초대코드를 발급할 수 있습니다');
     return;
   }
 
@@ -1765,7 +1770,7 @@ window.createUserInvite=async()=>{
     await setDoc(doc(db,'workspaces',currentWorkspace,'invites',inviteId),{
       displayName,
       normalizedName:normalizePersonName(displayName),
-      role:['viewer','editor','admin'].includes(role)?role:'editor',
+      role:['viewer','editor'].includes(role)?role:'editor',
       active:true,
       claimedUid:null,
       oneTime:true,
@@ -1814,20 +1819,19 @@ async function enterWorkspace(code,personalCode=''){
   const ref=memberRef();
   let memberSnap=await getDoc(ref);
 
-  // 전체 관리자는 자신이 생성하거나 관리하는 이벤트에 개인 코드 없이 입장 가능
-  if(isGlobalAdmin){
-    if(!memberSnap.exists()){
-      await setDoc(ref,{
-        displayName:name,
-        normalizedName:normalizePersonName(name),
-        role:'admin',
-        accessVerified:true,
-        joinedAt:serverTimestamp(),
-        updatedAt:serverTimestamp()
-      });
-    }else{
-      await setDoc(ref,{displayName:name,normalizedName:normalizePersonName(name),updatedAt:serverTimestamp()},{merge:true});
-    }
+  // 이미 인증된 참여자는 다시 코드를 입력하지 않아도 됩니다.
+  // 전체 관리자(노한나)는 모든 이벤트에 초대코드 없이 입장할 수 있습니다.
+  if(memberSnap.exists()){
+    await setDoc(ref,{displayName:name,normalizedName:normalizePersonName(name),updatedAt:serverTimestamp()},{merge:true});
+  }else if(isGlobalAdmin){
+    await setDoc(ref,{
+      displayName:name,
+      normalizedName:normalizePersonName(name),
+      role:'admin',
+      accessVerified:true,
+      joinedAt:serverTimestamp(),
+      updatedAt:serverTimestamp()
+    },{merge:true});
   }else{
     if(!personalCode) throw new Error('ACCESS_CODE_REQUIRED');
     const verified=await verifyPersonalAccess(currentWorkspace,name,personalCode);
@@ -1873,10 +1877,11 @@ async function enterWorkspace(code,personalCode=''){
 function bindSnapshots(){
   unsubs.push(onSnapshot(settingsRef(),snap=>{const d=snap.data();if(d&&Array.isArray(d.cats)&&d.cats.length)S.cats=d.cats;if(d&&d.catColors)S.catColors=d.catColors;if(d){if(d.title!==undefined)S.meta.title=d.title;if(d.sub!==undefined)S.meta.sub=d.sub;if(d.label!==undefined)S.meta.label=d.label}renderHeader();renderAll()}));
   ['budget','expenses','checklist'].forEach(n=>unsubs.push(onSnapshot(col(n),snap=>{S[n]=snap.docs.map(d=>({id:d.id,...d.data()}));setSync(true);renderAll()},e=>{console.error(e);setSync(false,true)})));
-  unsubs.push(onSnapshot(memberRef(),snap=>{if(snap.exists()){currentRole=snap.data().role||'editor';renderAccountUI();applyPermissions();if(canAdmin())bindAdmin()}}));
-  if(canAdmin())bindAdmin();
+  unsubs.push(onSnapshot(memberRef(),snap=>{if(snap.exists()){currentRole=snap.data().role||'editor';renderAccountUI();applyPermissions();if(canManageUsers())bindAdmin()}}));
+  if(canManageUsers())bindAdmin();
 }
 function bindAdmin(){
+  if(!canManageUsers())return;
   if(unsubs.some(x=>x._adminBound))return;
 
   let u=onSnapshot(
@@ -2196,9 +2201,12 @@ window.submitIdentity=async()=>{
     return;
   }
 
-  if(!createMode&&!isGlobalAdmin&&!personalCode){
-    toast('1회용 초대코드를 입력해주세요');
-    return;
+  if(!createMode&&!personalCode&&!isGlobalAdmin){
+    const existingMember=await getDoc(doc(db,'workspaces',code,'members',currentUid));
+    if(!existingMember.exists()){
+      toast('1회용 초대코드를 입력해주세요');
+      return;
+    }
   }
 
   saveLocal(USER_KEY,name);
@@ -2308,6 +2316,7 @@ window.openAccountModal=async()=>{
 
 window.openAccountPanel=panel=>{
   accountPanel=panel;
+  if(panel==='admin'&&!canManageUsers()){toast('전체 관리자만 사용자 및 권한 관리에 접근할 수 있습니다');panel='menu';}
   if(panel==='events') renderEventManageList();
   $('accountMenu').style.display=panel==='menu'?'grid':'none';
   ['profile','event','events','import','admin'].forEach(name=>{
@@ -2344,7 +2353,7 @@ function renderAccountUI(){
   b.className='role-badge '+currentRole;
   b.textContent=roleLabel(currentRole);
 
-  $('adminMenuButton').style.display=canAdmin()?'flex':'none';
+  $('adminMenuButton').style.display=canManageUsers()?'flex':'none';
   $('eventManageMenuButton').style.display=isGlobalAdmin?'flex':'none';
   $('importMenuButton').style.display=canEdit()?'flex':'none';
   $('nonAdminArea').style.display=accountPanel==='menu'&&!canAdmin()?'block':'none';
@@ -2353,7 +2362,7 @@ function renderAccountUI(){
   $('pendingEventName').textContent=currentWorkspaceName||currentWorkspace||'-';
   $('pendingEventCode').textContent=currentWorkspace||'-';
 
-  if(canAdmin()){renderMembers();renderLogs()}
+  if(canManageUsers()){renderMembers();renderLogs()}
 }
 
 
@@ -2501,7 +2510,7 @@ function renderMembers(){
 }
 
 window.removePendingMember=async uidValue=>{
-  if(!canAdmin())return;
+  if(!canManageUsers())return;
   const member=members.find(x=>x.uid===uidValue);
   if(!confirm(`${member?.displayName||'이 사용자'}의 참여 요청을 거절할까요?`))return;
   await deleteDoc(doc(db,'workspaces',currentWorkspace,'members',uidValue));
@@ -2574,7 +2583,7 @@ window.toggleGlobalAdmin=async uidValue=>{
   }
 };
 
-window.changeMemberRole=async(u,r)=>{if(!canAdmin())return;const m=members.find(x=>x.uid===u),old=m?.role;await setDoc(doc(db,'workspaces',currentWorkspace,'members',u),{role:r,updatedAt:serverTimestamp(),updatedBy:currentUid},{merge:true});await writeLog('권한 변경','member',u,{role:old},{role:r});toast('권한을 변경했습니다')};
+window.changeMemberRole=async(u,r)=>{if(!canManageUsers())return;const m=members.find(x=>x.uid===u),old=m?.role;await setDoc(doc(db,'workspaces',currentWorkspace,'members',u),{role:r,updatedAt:serverTimestamp(),updatedBy:currentUid},{merge:true});await writeLog('권한 변경','member',u,{role:old},{role:r});toast('권한을 변경했습니다')};
 window.setLogFilter=value=>{
   logFilterValue=value;
   document.querySelectorAll('[data-log-filter]').forEach(b=>b.classList.toggle('on',b.dataset.logFilter===value));
@@ -2846,7 +2855,9 @@ window.openCheckTab=()=>{
 };
 
 function renderDash(){
-  const totalB=S.budget.reduce((a,b)=>a+(+b.amount||0),0);
+  const expenseBudget=S.budget.filter(b=>(b.type||'expense')==='expense').reduce((a,b)=>a+(+b.amount||0),0);
+  const fundingTotal=S.budget.filter(b=>b.type==='funding').reduce((a,b)=>a+(+b.amount||0),0);
+  const totalB=fundingTotal||expenseBudget;
   const totalE=S.expenses.reduce((a,b)=>a+(+b.amount||0),0);
   const remain=totalB-totalE;
   $('dashRemain').innerHTML=remain.toLocaleString('ko-KR')+'<small>원 '+(remain>=0?'남음':'초과')+'</small>';
@@ -2857,8 +2868,8 @@ function renderDash(){
   $('laneTrack').style.setProperty('--runner-pos',lanePct+'%');
   fill.classList.toggle('over',totalB>0&&totalE>totalB);
   $('laneSpent').textContent='지출 '+won(totalE);
-  $('lanePct').textContent=totalB?Math.round(totalE/totalB*100)+'%':'예산 미설정';
-  $('laneBudget').textContent='예산 '+won(totalB);
+  $('lanePct').textContent=totalB?Math.round(totalE/totalB*100)+'%':'재원 미설정';
+  $('laneBudget').textContent='재원 '+won(totalB);
   $('stBudget').textContent=won(totalB);
   $('stSpent').textContent=won(totalE);
   $('stRemain').textContent=won(remain);
@@ -2866,7 +2877,7 @@ function renderDash(){
 
   let html='';
   allCats().forEach(c=>{
-    const b=S.budget.filter(x=>x.category===c).reduce((a,x)=>a+(+x.amount||0),0);
+    const b=S.budget.filter(x=>x.category===c&&(x.type||'expense')==='expense').reduce((a,x)=>a+(+x.amount||0),0);
     const e=S.expenses.filter(x=>x.category===c).reduce((a,x)=>a+(+x.amount||0),0);
     if(!b&&!e)return;
     const p=b?Math.min(100,e/b*100):100;
@@ -2934,15 +2945,22 @@ function renderCk(){
 }
 
 function renderBudget(){
-  const total=S.budget.reduce((a,b)=>a+(+b.amount||0),0);
-  $('budgetTotal').textContent='합계 '+won(total);
-  const sorted=[...S.budget].sort((a,b)=>allCats().indexOf(a.category)-allCats().indexOf(b.category));
-  $('budgetList').innerHTML=sorted.length?sorted.map(b=>`
-    <div class="item" onclick="openBgModal('${b.id}')">
-      <div class="grow"><div class="t1">${esc(b.name)}</div><div class="t2">${chip(b.category)}</div></div>
-      <div class="amt">${won(+b.amount||0)}</div>
-    </div>`).join('')
-    :'<div class="empty">예산 항목이 없습니다. 아래 버튼으로 추가하세요.<br>예: 경기용품, 상품/간식, 푸드트럭 계약비, 예비비</div>';
+  const funding=S.budget.filter(b=>b.type==='funding');
+  const expense=S.budget.filter(b=>(b.type||'expense')==='expense');
+  const fundingTotal=funding.reduce((a,b)=>a+(+b.amount||0),0);
+  const expenseTotal=expense.reduce((a,b)=>a+(+b.amount||0),0);
+  $('budgetTotal').textContent=`재원 ${won(fundingTotal)} · 지출예산 ${won(expenseTotal)}`;
+  const group=(title,list,badge)=>{
+    if(!list.length)return '';
+    const sorted=[...list].sort((a,b)=>allCats().indexOf(a.category)-allCats().indexOf(b.category));
+    return `<div class="sec-title" style="margin:12px 0 6px">${title}</div>`+sorted.map(b=>`
+      <div class="item" onclick="openBgModal('${b.id}')">
+        <div class="grow"><div class="t1">${esc(b.name)} <span class="sub">${badge}</span></div><div class="t2">${chip(b.category)}</div></div>
+        <div class="amt">${won(+b.amount||0)}</div>
+      </div>`).join('');
+  };
+  $('budgetList').innerHTML=(group('재원·수입',funding,'재원')+group('지출 예산',expense,'예산'))
+    ||'<div class="empty">재원 또는 지출 예산을 추가하세요.<br>재원 예: 회비, 후원금, 이월금 · 지출 예산 예: 식비, 장소대관비, 예비비</div>';
 }
 
 function expRow(e,clickable=true){
@@ -3134,7 +3152,8 @@ window.viewPhoto=id=>{
 /* ── 예산 ── */
 window.openBgModal=id=>{
   editingBg=id?S.budget.find(b=>b.id===id):null;
-  $('bgModalTitle').textContent=editingBg?'예산 항목 수정':'예산 항목 추가';
+  $('bgModalTitle').textContent=editingBg?'재원·예산 항목 수정':'재원·예산 항목 추가';
+  $('bgType').value=editingBg?(editingBg.type||'expense'):'expense';
   segSet('bgCatSeg',editingBg&&allCats().includes(editingBg.category)?editingBg.category:S.cats[0]);
   $('bgName').value=editingBg?editingBg.name:'';
   $('bgAmt').value=editingBg?editingBg.amount:'';
@@ -3147,8 +3166,8 @@ window.saveBudget=async()=>{
   if(!name){toast('항목명을 입력해주세요');return;}
   const id=editingBg?editingBg.id:uid();
   try{
-    await setDoc(doc(col('budget'),id),{category:segVal('bgCatSeg')||S.cats[0],name,amount:amt});
-    closeModal('bgModal'); toast('예산이 저장되었습니다');
+    await setDoc(doc(col('budget'),id),{type:$('bgType').value==='funding'?'funding':'expense',category:segVal('bgCatSeg')||S.cats[0],name,amount:amt});
+    closeModal('bgModal'); toast($('bgType').value==='funding'?'재원이 저장되었습니다':'지출 예산이 저장되었습니다');
   }catch(e){ toast('저장 실패 — 네트워크를 확인해주세요'); }
 };
 window.deleteBudget=async()=>{
